@@ -1,5 +1,7 @@
 package org.sopt.and
 
+import android.content.Intent
+import android.graphics.Paint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -26,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -33,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import org.sopt.and.ui.theme.ANDANDROIDTheme
 
 class SignUpActivity : ComponentActivity() {
@@ -256,20 +260,27 @@ fun SignUp() {
             Spacer(modifier = Modifier.weight(4f))
         }
 
-        Box(
+        val context = LocalContext.current
+        Text(
+            text = "Wavve 회원가입",
+            color = Color.White,
             modifier = Modifier
-                .align(Alignment.BottomCenter)
                 .background(Color.Gray)
                 .padding(10.dp)
-                .fillMaxWidth(),
-        ) {
-            Text(
-                text = "Wavve 회원가입",
-                color = Color.White,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-            )
-        }
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .clickable(
+                    enabled = true,
+                    onClick = {
+                        Intent(context, LogInActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                            context.startActivity(this)
+                        }
+                    }
+                ),
+            textAlign = TextAlign.Center,
+        )
+
     }
 }
 
