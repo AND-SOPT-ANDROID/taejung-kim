@@ -1,9 +1,16 @@
 package org.sopt.and
 
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivityResultRegistryOwner
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,6 +41,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -42,6 +50,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.sopt.and.ui.theme.ANDANDROIDTheme
+
+// id, passwd 저장할 임의 변수 설정
+private var id: String? = ""
+private var passwd: String? = ""
 
 class LogInActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +69,8 @@ class LogInActivity : ComponentActivity() {
 
 @Composable
 fun LogIn() {
+    val signUpResultLauncher = activityResult()
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -172,8 +186,16 @@ fun LogIn() {
             Text(
                 "회원가입",
                 fontSize = 12.sp,
-                modifier = Modifier.padding(horizontal = 8.dp),
-                color = Color.Gray
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .clickable(
+                        enabled = true,
+                        onClick = {
+                            val intent = Intent(context, SignUpActivity::class.java)
+                            signUpResultLauncher.launch(intent)
+                        }
+                    ),
+                color = Color.Gray,
             )
         }
 
@@ -254,6 +276,24 @@ fun LogIn() {
         Spacer(modifier = Modifier.weight(4f))
     }
 
+}
+
+@Composable
+fun activityResult(): ActivityResultLauncher<Intent> {
+    // ActivityResultLauncher 객체 초기화, 다른 activity로부터 결과 받음
+    val signUpResultLauncher = rememberLauncherForActivityResult(
+        // contract 파라미터를 전달하여 다른 액티비티의 결과를 받기 위한 기본 계약으로 생각
+        contract = ActivityResultContracts.StartActivityForResult(),
+        // 콜백 함수로 처리, Result_OK 인 경우만 데이터 처리
+        onResult = { result ->
+            if (result.resultCode == RESULT_OK) {
+                id = result.data?.getStringExtra("id")
+                passwd = result.data?.getStringExtra("password")
+                Log.d("전달받은 데이터", "아이디 : $id, 비밀번호: $passwd")
+            }
+        }
+    )
+    return signUpResultLauncher
 }
 
 @Preview(showBackground = true)

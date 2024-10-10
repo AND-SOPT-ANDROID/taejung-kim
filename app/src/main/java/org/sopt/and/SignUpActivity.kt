@@ -1,5 +1,7 @@
 package org.sopt.and
 
+import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
@@ -60,6 +62,7 @@ fun SignUp() {
     var textId by remember { mutableStateOf("") }
     // password text remeber를 통한 변수 변경
     var textPasswd by remember { mutableStateOf("") }
+    val context = LocalContext.current as? Activity
 
     Box(
         // column 과 Box 구분
@@ -268,7 +271,6 @@ fun SignUp() {
             Spacer(modifier = Modifier.weight(4f))
         }
 
-        val context = LocalContext.current
         Text(
             text = "Wavve 회원가입",
             color = Color.White,
@@ -285,9 +287,15 @@ fun SignUp() {
                         when(CheckSignUp.checkSignUpValue(textId, textPasswd)){
                             "idError" -> Toast.makeText(context, "유효하지 않은 아이디 입니다. 다시 한번 확인해주세요", Toast.LENGTH_SHORT).show()
                             "passwdError" -> Toast.makeText(context, "유효하지 않은 비밀번호 입니다. 다시 한번 확인해주세요", Toast.LENGTH_SHORT).show()
-                            else -> Intent(context, LogInActivity::class.java).apply {
-                                flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                                context.startActivity(this)
+                            else -> {
+                                // 회원가입 성공 결과 반환, intent에 담아 넣음
+                                val data = Intent().apply {
+                                    putExtra("id", textId)
+                                    putExtra("password", textPasswd)
+                                }
+                                // activityResultLauncher 의 반환은 setResult가 Result_OK일 때, data와 같이
+                                context?.setResult(RESULT_OK, data)
+                                context?.finish()
                             }
                         }
                     }
