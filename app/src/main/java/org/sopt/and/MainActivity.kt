@@ -1,8 +1,10 @@
 package org.sopt.and
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,9 +21,18 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import org.sopt.and.ui.theme.ANDANDROIDTheme
 
+private var id : String? = ""
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val mainViewModel: MainViewModel by viewModels()
+
+        // viewModel에 id 설정
+        id = intent.getStringExtra("id")
+        Log.d("id",id.toString())
+        mainViewModel.setId(id)
+
         setContent {
             ANDANDROIDTheme {
                 val navController = rememberNavController()
@@ -33,7 +44,8 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier
                             .background(Color.DarkGray)
                             .padding(innerPadding)) {
-                        NavGraph(navController = navController)
+                        NavGraph(navController = navController,
+                            mainViewModel = mainViewModel)
                     }
                 }
             }

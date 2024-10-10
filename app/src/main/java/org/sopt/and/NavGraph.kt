@@ -10,10 +10,12 @@ import org.sopt.and.screens.SearchScreen
 
 // navigation graph route에 따른 이동 정의
 @Composable
-fun NavGraph(navController: NavHostController, startDestination: String = "home") {
+fun NavGraph(navController: NavHostController,
+             mainViewModel: MainViewModel
+) {
     NavHost(
         navController = navController,
-        startDestination = startDestination
+        startDestination = "home"
     ) {
         composable("home") {
             HomeScreen(navController)
@@ -22,7 +24,7 @@ fun NavGraph(navController: NavHostController, startDestination: String = "home"
             SearchScreen(navController)
         }
         composable("my") {
-            MyScreen(navController)
+            MyScreen(navController, mainViewModel)
         }
     }
 }

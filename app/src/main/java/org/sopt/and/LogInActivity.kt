@@ -164,6 +164,7 @@ fun LogIn() {
                     // SnackbarHost도 activity의 일부, finish시 메모리에서 제거
                     if (textId == id && textPasswd == passwd) {
                         Intent(context, MainActivity::class.java).apply {
+                            putExtra("id",textId)
                             flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                             context.startActivity(this)
                         }

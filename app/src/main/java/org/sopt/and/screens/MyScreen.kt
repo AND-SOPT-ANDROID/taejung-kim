@@ -1,5 +1,6 @@
 package org.sopt.and.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,13 +27,21 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import org.sopt.and.MainViewModel
 import org.sopt.and.R
 import org.sopt.and.ui.theme.Gray2
 import org.sopt.and.ui.theme.Typography
 
 @Composable
-fun MyScreen(navController: NavController) {
+fun MyScreen(navController: NavController, mainViewModel: MainViewModel) {
+
+    // ViewModel에서 LiveData를 관찰
+    // runtime-livedata 라이브러리를 이용
+    val id = mainViewModel.id.observeAsState("")
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -53,7 +63,7 @@ fun MyScreen(navController: NavController) {
             )
             Spacer(modifier = Modifier.size(8.dp))
             Text(
-                text = "이름 받을 곳",
+                text = "${id.value}",
                 style = Typography.titleSmall,
                 color = Color.White,
             )
