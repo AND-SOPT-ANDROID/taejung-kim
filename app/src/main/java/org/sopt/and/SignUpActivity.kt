@@ -3,6 +3,8 @@ package org.sopt.and
 import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -30,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -38,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
 import org.sopt.and.ui.theme.ANDANDROIDTheme
+import org.sopt.and.ui.theme.Typography
 
 class SignUpActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,6 +56,11 @@ class SignUpActivity : ComponentActivity() {
 
 @Composable
 fun SignUp() {
+    // id text remeber를 통한 변수 변경
+    var textId by remember { mutableStateOf("") }
+    // password text remeber를 통한 변수 변경
+    var textPasswd by remember { mutableStateOf("") }
+
     Box(
         // column 과 Box 구분
         modifier = Modifier.fillMaxSize()
@@ -108,7 +117,6 @@ fun SignUp() {
             }
 
             // id text remeber를 통한 변수 변경
-            var textId by remember { mutableStateOf("") }
 
             Spacer(modifier = Modifier.weight(2f))
             // 윤곽선의 색상 및 두께를 커스텀 가능한 OutLinedTextField
@@ -117,6 +125,7 @@ fun SignUp() {
                 onValueChange = { textId = it },
                 modifier = Modifier
                     .fillMaxWidth(),
+                textStyle = TextStyle(Color.White),
                 placeholder = { Text("wavve@example.com") },
                 singleLine = true,
             )
@@ -139,8 +148,6 @@ fun SignUp() {
             }
 
             Spacer(modifier = Modifier.weight(1f))
-            // password text remeber를 통한 변수 변경
-            var textPasswd by remember { mutableStateOf("") }
             // password boolean remeber를 통한 숨김 UI 변경
             var passwdVisible by remember { mutableStateOf(false) }
             OutlinedTextField(
@@ -149,6 +156,7 @@ fun SignUp() {
                 modifier = Modifier
                     .fillMaxWidth(),
                 placeholder = { Text("Wavve 비밀번호 설정") },
+                textStyle = TextStyle(Color.White),
                 singleLine = true,
                 // passwdVisible boolean에 따라 표시가 다르게
                 visualTransformation = if (passwdVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -272,13 +280,19 @@ fun SignUp() {
                 .clickable(
                     enabled = true,
                     onClick = {
-                        Intent(context, LogInActivity::class.java).apply {
-                            flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                            context.startActivity(this)
+                        Log.d("textId", textId.toString())
+                        Log.d("textPasswd", textPasswd.toString())
+                        when(CheckSignUp.checkSignUpValue(textId, textPasswd)){
+                            "idError" -> Toast.makeText(context, "유효하지 않은 아이디 입니다. 다시 한번 확인해주세요", Toast.LENGTH_SHORT).show()
+                            "passwdError" -> Toast.makeText(context, "유효하지 않은 비밀번호 입니다. 다시 한번 확인해주세요", Toast.LENGTH_SHORT).show()
+                            else -> Intent(context, LogInActivity::class.java).apply {
+                                flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                                context.startActivity(this)
+                            }
                         }
                     }
                 ),
-            textAlign = TextAlign.Center,
+            textAlign = TextAlign.Center
         )
 
     }
