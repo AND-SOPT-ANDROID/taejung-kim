@@ -32,6 +32,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -39,6 +40,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -193,24 +195,28 @@ fun LogIn() {
                     modifier = Modifier.padding(horizontal = 8.dp),
                     color = Color.Gray
                 )
-                Spacer(
+
+                VerticalDivider(
+                    color = Color.Gray,
                     modifier = Modifier
-                        .height(10.dp)
+                        .height(12.dp)
                         .width(1.dp)
-                        .background(Color.Gray)
                 )
+
                 Text(
                     text = stringResource(R.string.log_in_passwd_change),
                     fontSize = 12.sp,
                     modifier = Modifier.padding(horizontal = 8.dp),
                     color = Color.Gray
                 )
-                Spacer(
+
+                VerticalDivider(
+                    color = Color.Gray,
                     modifier = Modifier
-                        .height(10.dp)
+                        .height(12.dp)
                         .width(1.dp)
-                        .background(Color.Gray)
                 )
+
                 Text(
                     text = stringResource(R.string.log_in_sign_up),
                     fontSize = 12.sp,
