@@ -26,4 +26,7 @@
     <string name="my_no_watching">시청내역이 없어요</string>
     <string name="my_wish">관심 프로그램</string>
     <string name="my_no_wish">관심 프로그램이 없어요</string>
+    <string name="main_screen_home">home</string>
+    <string name="main_screen_search">search</string>
+    <string name="main_screen_my">my</string>
 </resources>
