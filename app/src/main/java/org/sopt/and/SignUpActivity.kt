@@ -284,7 +284,7 @@ fun SignUp() {
                     onClick = {
                         Log.d("textId", textId.toString())
                         Log.d("textPasswd", textPasswd.toString())
-                        when(CheckSignUp.checkSignUpValue(textId, textPasswd)){
+                        when(checkSignUpValue(textId, textPasswd)){
                             "idError" -> Toast.makeText(context, "유효하지 않은 아이디 입니다. 다시 한번 확인해주세요", Toast.LENGTH_SHORT).show()
                             "passwdError" -> Toast.makeText(context, "유효하지 않은 비밀번호 입니다. 다시 한번 확인해주세요", Toast.LENGTH_SHORT).show()
                             else -> {
