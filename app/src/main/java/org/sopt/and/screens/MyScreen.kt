@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -87,7 +88,7 @@ fun MyScreen(navController: NavController, mainViewModel: MainViewModel) {
         }
 
         Text(
-            text = "첫 결제시 첫 달 100원!",
+            text = stringResource(R.string.my_first),
             color = Color.Gray,
             style = Typography.titleSmall,
             modifier = Modifier
@@ -100,7 +101,8 @@ fun MyScreen(navController: NavController, mainViewModel: MainViewModel) {
                 .background(Gray2)
                 .padding(start = 16.dp, bottom = 16.dp)
         ) {
-            Text("구매하기",
+            Text(
+                stringResource(R.string.my_purchase),
                 style = Typography.titleSmall,
                 color = Color.White)
             Image(
@@ -113,7 +115,7 @@ fun MyScreen(navController: NavController, mainViewModel: MainViewModel) {
             .height(1.dp))
 
         Text(
-            text = "현재 보유하신 이용권이 없습니다.",
+            text = stringResource(R.string.my_no_purchase),
             color = Color.Gray,
             style = Typography.titleSmall,
             modifier = Modifier
@@ -126,7 +128,7 @@ fun MyScreen(navController: NavController, mainViewModel: MainViewModel) {
                 .background(Gray2)
                 .padding(start = 16.dp, bottom = 16.dp)
         ) {
-            Text(text = "구매하기",
+            Text(text = stringResource(R.string.my_purchase),
                 style = Typography.titleSmall,
                 color = Color.White)
             Image(
@@ -138,7 +140,7 @@ fun MyScreen(navController: NavController, mainViewModel: MainViewModel) {
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = "전체 시청내역",
+                text = stringResource(R.string.my_watching),
                 color = Color.White,
                 style = Typography.headlineMedium,
                 modifier = Modifier.padding(16.dp)
@@ -151,7 +153,7 @@ fun MyScreen(navController: NavController, mainViewModel: MainViewModel) {
                 alignment = Alignment.Center,
                 contentDescription = "시청 내역 없음"
             )
-            Text(text = "시청내역이 없어요",
+            Text(text = stringResource(R.string.my_no_watching),
                 color = Color.Gray,
                 style = Typography.titleSmall,
                 modifier = Modifier.fillMaxWidth(),
@@ -162,7 +164,7 @@ fun MyScreen(navController: NavController, mainViewModel: MainViewModel) {
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = "관심 프로그램",
+                text = stringResource(R.string.my_wish),
                 color = Color.White,
                 style = Typography.headlineMedium,
                 modifier = Modifier.padding(16.dp)
@@ -174,7 +176,7 @@ fun MyScreen(navController: NavController, mainViewModel: MainViewModel) {
                     .size(80.dp),
                 contentDescription = "시청 내역 없음"
             )
-            Text(text = "관심 프로그램이 없어요",
+            Text(text = stringResource(R.string.my_no_wish),
                 color = Color.Gray,
                 style = Typography.titleSmall,
                 modifier = Modifier.fillMaxWidth(),

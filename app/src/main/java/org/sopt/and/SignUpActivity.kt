@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -143,7 +144,7 @@ fun SignUp() {
                         .padding(end = 4.dp)
                 )
                 Text(
-                    text = "로그인, 비밀번호 찾기, 알림에 사용되니 정확한 이메일을 입력해주세요.",
+                    text = stringResource(R.string.sign_up_id),
                     modifier = Modifier.weight(1f),
                     color = Color.Gray,
                     fontSize = 12.sp,
@@ -187,7 +188,7 @@ fun SignUp() {
                         .padding(end = 4.dp)
                 )
                 Text(
-                    text = "비밀번호는 8~20자 이내로 영문 대소문자, 숫자, 특수문자 중 3가지 이상 혼용하여 입력해주세요",
+                    text = stringResource(R.string.sign_up_passwd),
                     modifier = Modifier.weight(1f),
                     color = Color.Gray,
                     fontSize = 12.sp
@@ -201,7 +202,10 @@ fun SignUp() {
             ) {
                 // 실선을 위해 좌우 Spacer 배치
                 Spacer(
-                    modifier = Modifier.height(1.dp).background(Color.Gray).weight(1f)
+                    modifier = Modifier
+                        .height(1.dp)
+                        .background(Color.Gray)
+                        .weight(1f)
                 )
                 Text(
                     "또는 다른 서비스 계정으로 가입",
@@ -210,7 +214,10 @@ fun SignUp() {
                     color = Color.Gray
                 )
                 Spacer(
-                    modifier = Modifier.height(1.dp).background(Color.Gray).weight(1f)
+                    modifier = Modifier
+                        .height(1.dp)
+                        .background(Color.Gray)
+                        .weight(1f)
                 )
             }
 
@@ -261,8 +268,7 @@ fun SignUp() {
                     fontSize = 12.sp
                 )
                 Text(
-                    text = "SNS계정으로 간편하게 가입하여 서비스를 이용할 수 있습니다. 기존 POOQ 계정 또는 Wavve 계정과는" +
-                            "연동되지 않으니 이용에 참고하세요.",
+                    text = stringResource(R.string.sns_pooq_wavve),
                     modifier = Modifier.weight(1f),
                     color = Color.Gray,
                     fontSize = 12.sp
@@ -284,9 +290,22 @@ fun SignUp() {
                     onClick = {
                         Log.d("textId", textId.toString())
                         Log.d("textPasswd", textPasswd.toString())
-                        when(checkSignUpValue(textId, textPasswd)){
-                            "idError" -> Toast.makeText(context, "유효하지 않은 아이디 입니다. 다시 한번 확인해주세요", Toast.LENGTH_SHORT).show()
-                            "passwdError" -> Toast.makeText(context, "유효하지 않은 비밀번호 입니다. 다시 한번 확인해주세요", Toast.LENGTH_SHORT).show()
+                        when (checkSignUpValue(textId, textPasswd)) {
+                            "idError" -> Toast
+                                .makeText(
+                                    context,
+                                    context?.getString(R.string.sign_up_error), Toast.LENGTH_SHORT
+                                )
+                                .show()
+
+                            "passwdError" -> Toast
+                                .makeText(
+                                    context,
+                                    context?.getString(R.string.sign_up_paswd),
+                                    Toast.LENGTH_SHORT
+                                )
+                                .show()
+
                             else -> {
                                 // 회원가입 성공 결과 반환, intent에 담아 넣음
                                 val data = Intent().apply {

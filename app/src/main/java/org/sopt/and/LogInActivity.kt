@@ -49,6 +49,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -124,7 +125,7 @@ fun LogIn() {
                 onValueChange = { textId = it },
                 modifier = Modifier
                     .fillMaxWidth(),
-                placeholder = { Text("이메일 주소 또는 아이디") },
+                placeholder = { Text(stringResource(R.string.log_in_id)) },
                 singleLine = true,
             )
 
@@ -140,7 +141,7 @@ fun LogIn() {
                 onValueChange = { textPasswd = it },
                 modifier = Modifier
                     .fillMaxWidth(),
-                placeholder = { Text("비밀번호") },
+                placeholder = { Text(stringResource(R.string.log_in_passwd)) },
                 singleLine = true,
                 // passwdVisible boolean에 따라 표시가 다르게
                 visualTransformation = if (passwdVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -172,18 +173,17 @@ fun LogIn() {
                     } else {
                         // 로그인 실패 시 Snackbar 표시를 위한 코루틴 실행
                         coroutineScope.launch {
-                            Log.d("스낵바 출력", "스낵바 출력")
                             snackbarHostState.showSnackbar(
-                                "아이디 비밀번호가 일치하지 않습니다",
-                                "확인",
+                                context.getString(R.string.log_in_error),
+                                context.getString(R.string.log_in_ok),
                             ).let {
                                 // 스낵바 작동 테스트
                                 when (it) {
                                     SnackbarResult.Dismissed -> {
-                                        Log.d("snackBar", "snackBar: 스낵바 닫아짐")
+                                        // 스낵바 없어진 경우
                                     }
                                     SnackbarResult.ActionPerformed -> {
-                                        Log.d("snackBar", "snackBar: 확인 버튼 눌러짐")
+                                        // 스낵바 나온 경우
                                     }
                                 }
                             }
@@ -204,7 +204,7 @@ fun LogIn() {
                     disabledContentColor = Color.White
                 )
             ) {
-                Text(text = "로그인")
+                Text(text = stringResource(R.string.log_in_execute))
             }
 
             Spacer(modifier = Modifier.weight(1f))
@@ -214,7 +214,7 @@ fun LogIn() {
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(
-                    "아이디 찾기",
+                    stringResource(R.string.log_in_find_id),
                     fontSize = 12.sp,
                     modifier = Modifier.padding(horizontal = 8.dp),
                     color = Color.Gray
@@ -226,7 +226,7 @@ fun LogIn() {
                         .background(Color.Gray)
                 )
                 Text(
-                    "비밀번호 재설정",
+                    text = stringResource(R.string.log_in_passwd_change),
                     fontSize = 12.sp,
                     modifier = Modifier.padding(horizontal = 8.dp),
                     color = Color.Gray
@@ -238,7 +238,7 @@ fun LogIn() {
                         .background(Color.Gray)
                 )
                 Text(
-                    "회원가입",
+                    text = stringResource(R.string.log_in_sign_up),
                     fontSize = 12.sp,
                     modifier = Modifier
                         .padding(horizontal = 8.dp)
@@ -260,7 +260,10 @@ fun LogIn() {
             ) {
                 // 실선을 위해 좌우 Spacer 배치
                 Spacer(
-                    modifier = Modifier.height(1.dp).background(Color.Gray).weight(1f)
+                    modifier = Modifier
+                        .height(1.dp)
+                        .background(Color.Gray)
+                        .weight(1f)
                 )
                 Text(
                     "또는 다른 서비스 계정으로 가입",
@@ -269,7 +272,10 @@ fun LogIn() {
                     color = Color.Gray
                 )
                 Spacer(
-                    modifier = Modifier.height(1.dp).background(Color.Gray).weight(1f)
+                    modifier = Modifier
+                        .height(1.dp)
+                        .background(Color.Gray)
+                        .weight(1f)
                 )
             }
 
@@ -320,8 +326,7 @@ fun LogIn() {
                     fontSize = 12.sp
                 )
                 Text(
-                    text = "SNS계정으로 간편하게 가입하여 서비스를 이용할 수 있습니다.\n기존 POOQ 계정 또는 Wavve 계정과는" +
-                            "연동되지 않으니 이용에 참고하세요.",
+                    text = stringResource(R.string.sns_pooq_wavve),
                     modifier = Modifier.weight(1f),
                     color = Color.Gray,
                     fontSize = 12.sp
