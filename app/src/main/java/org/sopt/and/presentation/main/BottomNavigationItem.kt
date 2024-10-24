@@ -1,4 +1,4 @@
-package org.sopt.and
+package org.sopt.and.presentation.main
 
 // 바텀 네비게이션 뷰에 필요한 데이터 객체 정의
 data class BottomNavigationItem(

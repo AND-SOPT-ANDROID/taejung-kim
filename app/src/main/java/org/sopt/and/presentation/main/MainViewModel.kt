@@ -1,4 +1,4 @@
-package org.sopt.and
+package org.sopt.and.presentation.main
 
 import android.util.Log
 import androidx.lifecycle.LiveData

@@ -1,36 +1,26 @@
-package org.sopt.and
+package org.sopt.and.presentation.main
 
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import kotlinx.coroutines.launch
-import org.sopt.and.screens.HomeScreen
-import org.sopt.and.screens.MyScreen
-import org.sopt.and.screens.SearchScreen
+import org.sopt.and.R
+import org.sopt.and.presentation.home.HomeScreen
+import org.sopt.and.presentation.mypage.MyScreen
+import org.sopt.and.presentation.search.SearchScreen
 import org.sopt.and.ui.theme.ANDANDROIDTheme
 
 private var id : String? = ""
@@ -42,7 +32,7 @@ class MainActivity : ComponentActivity() {
 
         // viewModel에 id 설정
         id = intent.getStringExtra("id")
-        Log.d("id",id.toString())
+        Log.d("id", id.toString())
         mainViewModel.setId(id)
 
         setContent {

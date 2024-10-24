@@ -1,4 +1,4 @@
-package org.sopt.and
+package org.sopt.and.presentation.signup
 
 import org.sopt.and.util.RegExPattern.idPattern
 import org.sopt.and.util.RegExPattern.passwdPattern
