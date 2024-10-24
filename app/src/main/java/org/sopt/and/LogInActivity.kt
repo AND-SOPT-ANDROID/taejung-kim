@@ -2,6 +2,7 @@ package org.sopt.and
 
 import android.app.Activity
 import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -57,6 +58,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.sopt.and.ui.theme.ANDANDROIDTheme
 
@@ -161,35 +163,7 @@ fun LogIn() {
 
             Spacer(modifier = Modifier.weight(1f))
             Button(
-                onClick = {
-                    // SnackbarHost도 activity의 일부, finish시 메모리에서 제거
-                    if (textId == id && textPasswd == passwd) {
-                        Intent(context, MainActivity::class.java).apply {
-                            putExtra("id",textId)
-                            flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                            context.startActivity(this)
-                        }
-                        context.finish()
-                    } else {
-                        // 로그인 실패 시 Snackbar 표시를 위한 코루틴 실행
-                        coroutineScope.launch {
-                            snackbarHostState.showSnackbar(
-                                context.getString(R.string.log_in_error),
-                                context.getString(R.string.log_in_ok),
-                            ).let {
-                                // 스낵바 작동 테스트
-                                when (it) {
-                                    SnackbarResult.Dismissed -> {
-                                        // 스낵바 없어진 경우
-                                    }
-                                    SnackbarResult.ActionPerformed -> {
-                                        // 스낵바 나온 경우
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
+                onClick = { logInClick(context, textId, id, textPasswd, passwd, coroutineScope, snackbarHostState) },
                 modifier = Modifier.fillMaxWidth(),
                 contentPadding = PaddingValues(16.dp),
                 // ButtonDefaults 의 4가지 형태
@@ -336,6 +310,42 @@ fun LogIn() {
         }
     }
 
+}
+
+// onClick 함수 객체화
+fun logInClick(
+    context: Context,
+    textId: String,
+    id: String?,
+    textPasswd: String,
+    passwd: String?,
+    coroutineScope: CoroutineScope,
+    snackbarHostState: SnackbarHostState
+) {
+    if (textId == id && textPasswd == passwd) {
+        Intent(context, MainActivity::class.java).apply {
+            putExtra("id", textId)
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            context.startActivity(this)
+        }
+        (context as Activity).finish()
+    } else {
+        coroutineScope.launch {
+            snackbarHostState.showSnackbar(
+                context.getString(R.string.log_in_error),
+                context.getString(R.string.log_in_ok),
+            ).let {
+                when (it) {
+                    SnackbarResult.Dismissed -> {
+                        // 스낵바 없어진 경우
+                    }
+                    SnackbarResult.ActionPerformed -> {
+                        // 스낵바 나온 경우
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable
