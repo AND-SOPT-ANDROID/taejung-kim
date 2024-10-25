@@ -1,14 +1,14 @@
 package org.sopt.and.presentation.signup
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import org.sopt.and.R
+import org.sopt.and.domain.SharedPreferenceManager
 
 class UserViewModel : ViewModel() {
-    private var userId: String? = null
-    private var userPassword: String? = null
+    private var userId = ""
+    private var userPassword = ""
 
     // 로그인 상태를 관리하기 위한 LiveData
     private val _loginResult = MutableLiveData<Boolean>()
@@ -21,7 +21,6 @@ class UserViewModel : ViewModel() {
             "passwdError" -> onResult(false, R.string.sign_up_paswd)
             else -> {
                 userId = id
-                Log.d("userId",userId.toString())
                 userPassword = password
                 onResult(true, 0)
             }
@@ -32,6 +31,7 @@ class UserViewModel : ViewModel() {
     fun logIn(id: String, password: String) {
         if (id == userId && password == userPassword) {
             _loginResult.value = true  // 로그인 성공
+            SharedPreferenceManager.saveUserId(userId)
         } else {
             _loginResult.value = false // 로그인 실패
         }

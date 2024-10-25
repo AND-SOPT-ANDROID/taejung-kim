@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.sopt.and.presentation.main.MainViewModel
 import org.sopt.and.R
+import org.sopt.and.domain.SharedPreferenceManager
 import org.sopt.and.ui.theme.Gray2
 import org.sopt.and.ui.theme.Typography
 
@@ -32,7 +32,7 @@ fun MyScreen(paddingValues: PaddingValues, mainViewModel: MainViewModel) {
 
     // ViewModel에서 LiveData를 관찰
     // runtime-livedata 라이브러리를 이용
-    val id = mainViewModel.id.observeAsState("")
+    val userId = SharedPreferenceManager.getUserId()
 
     Column(
         modifier = Modifier
@@ -55,7 +55,7 @@ fun MyScreen(paddingValues: PaddingValues, mainViewModel: MainViewModel) {
             )
             Spacer(modifier = Modifier.size(8.dp))
             Text(
-                text = "${id.value}",
+                text = "$userId",
                 style = Typography.titleSmall,
                 color = Color.White,
             )
