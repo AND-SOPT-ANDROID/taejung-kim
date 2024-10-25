@@ -54,11 +54,11 @@ fun HomeScreen(viewModel: MainViewModel) {
             HomeCategory(categories)
         }
         item { HomeTopBanner(movies) }
-        item {
-            HomeEditor(movies)
-            Spacer(modifier = Modifier.height(20.dp))
+        item{
+            HomeTop20(movies)
+            Spacer(modifier = Modifier.height(30.dp))
         }
-        item{HomeTop20(movies)}
+        item { HomeEditor(movies) }
     }
 }
 
@@ -95,11 +95,11 @@ fun HomeCategory(categories: List<Int>) {
         modifier = Modifier
             .background(Color.Black)
             .padding(vertical = 15.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
+        horizontalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         items(categories.size){ index ->
             Text(text = stringResource(categories[index]),
-                fontSize = 16.sp,
+                fontSize = 20.sp,
                 color = Color.LightGray,
                 style = Typography.bodyMedium)
         }
