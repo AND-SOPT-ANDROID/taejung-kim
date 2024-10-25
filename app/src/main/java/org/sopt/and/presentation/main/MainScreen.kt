@@ -36,7 +36,7 @@ fun MainScreen(navController: NavController) {
             startDestination = Screen.Home.route
         ) {
             composable(Screen.Home.route) {
-                HomeScreen(innerPadding)
+                HomeScreen()
             }
             composable(Screen.Search.route) {
                 SearchScreen(innerPadding)

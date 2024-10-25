@@ -37,6 +37,10 @@ val Typography = Typography(
         fontFamily = pretendard,
         fontWeight = FontWeight.Medium,
         fontSize = 16.sp
+    ),
+    titleLarge = TextStyle(
+        fontFamily = pretendard,
+        fontWeight = FontWeight.Bold
     )
 
 
