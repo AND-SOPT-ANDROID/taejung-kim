@@ -1,17 +1,9 @@
 package org.sopt.and.presentation.login
 
 import android.app.Activity
-import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import android.util.Log
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,7 +29,9 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -52,38 +46,25 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.sopt.and.R
-import org.sopt.and.presentation.signup.SignUpActivity
 import org.sopt.and.presentation.main.MainActivity
-import org.sopt.and.ui.theme.ANDANDROIDTheme
-
-// id, passwd 저장할 임의 변수 설정
-private var id: String? = ""
-private var passwd: String? = ""
-
-class LogInActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            ANDANDROIDTheme {
-                LogIn()
-            }
-        }
-    }
-}
+import org.sopt.and.presentation.signup.UserViewModel
 
 @Composable
-fun LogIn() {
-    val signUpResultLauncher = activityResult()
+fun LogInScreen(
+    navController: NavController,
+    viewModel: UserViewModel
+
+) {
+    val loginResult by viewModel.loginResult.observeAsState()
     val context = LocalContext.current as Activity
     val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
 
     // SnackBar 구현을 위해 Scaffold 안에 정의
     Scaffold(
@@ -163,7 +144,7 @@ fun LogIn() {
 
             Spacer(modifier = Modifier.weight(1f))
             Button(
-                onClick = { logInClick(context, textId, id, textPasswd, passwd, coroutineScope, snackbarHostState) },
+                onClick = {viewModel.logIn(textId, textPasswd)},
                 modifier = Modifier.fillMaxWidth(),
                 contentPadding = PaddingValues(16.dp),
                 // ButtonDefaults 의 4가지 형태
@@ -179,6 +160,24 @@ fun LogIn() {
                 )
             ) {
                 Text(text = stringResource(R.string.log_in_execute))
+            }
+
+            // viewModel의 loginResult을 옵저빙하여 로그인 이동
+            LaunchedEffect(loginResult) {
+                loginResult?.let {
+                    if (it) {
+                        navController.navigate("mainScreen") {
+                            // navigation stack에서 이전 화면 제거
+                            popUpTo("login") { inclusive = true }
+                        }
+                    } else {
+                        // 스낵바 간소화
+                        snackbarHostState.showSnackbar(
+                            message = context.getString(R.string.log_in_error),
+                            actionLabel = context.getString(R.string.log_in_ok)
+                        )
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.weight(1f))
@@ -222,10 +221,7 @@ fun LogIn() {
                         .padding(horizontal = 8.dp)
                         .clickable(
                             enabled = true,
-                            onClick = {
-                                val intent = Intent(context, SignUpActivity::class.java)
-                                signUpResultLauncher.launch(intent)
-                            }
+                            onClick = {navController.navigate("signup")}
                         ),
                     color = Color.Gray,
                 )
@@ -314,66 +310,4 @@ fun LogIn() {
         }
     }
 
-}
-
-// onClick 함수 객체화
-fun logInClick(
-    context: Context,
-    textId: String,
-    id: String?,
-    textPasswd: String,
-    passwd: String?,
-    coroutineScope: CoroutineScope,
-    snackbarHostState: SnackbarHostState
-) {
-    if (textId == id && textPasswd == passwd) {
-        Intent(context, MainActivity::class.java).apply {
-            putExtra("id", textId)
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-            context.startActivity(this)
-        }
-        (context as Activity).finish()
-    } else {
-        coroutineScope.launch {
-            snackbarHostState.showSnackbar(
-                context.getString(R.string.log_in_error),
-                context.getString(R.string.log_in_ok),
-            ).let {
-                when (it) {
-                    SnackbarResult.Dismissed -> {
-                        // 스낵바 없어진 경우
-                    }
-                    SnackbarResult.ActionPerformed -> {
-                        // 스낵바 나온 경우
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun activityResult(): ActivityResultLauncher<Intent> {
-    // ActivityResultLauncher 객체 초기화, 다른 activity로부터 결과 받음
-    val signUpResultLauncher = rememberLauncherForActivityResult(
-        // contract 파라미터를 전달하여 다른 액티비티의 결과를 받기 위한 기본 계약으로 생각
-        contract = ActivityResultContracts.StartActivityForResult(),
-        // 콜백 함수로 처리, Result_OK 인 경우만 데이터 처리
-        onResult = { result ->
-            if (result.resultCode == RESULT_OK) {
-                id = result.data?.getStringExtra("id")?.trim()
-                passwd = result.data?.getStringExtra("password")?.trim()
-                Log.d("전달받은 데이터", "아이디 : $id, 비밀번호: $passwd")
-            }
-        }
-    )
-    return signUpResultLauncher
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview2() {
-    ANDANDROIDTheme {
-        LogIn()
-    }
 }

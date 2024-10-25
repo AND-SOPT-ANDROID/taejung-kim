@@ -1,13 +1,8 @@
 package org.sopt.and.presentation.signup
 
 import android.app.Activity
-import android.app.Activity.RESULT_OK
-import android.content.Intent
-import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,25 +33,17 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import org.sopt.and.R
-import org.sopt.and.ui.theme.ANDANDROIDTheme
-
-class SignUpActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            ANDANDROIDTheme {
-                SignUp()
-            }
-        }
-    }
-}
 
 @Composable
-fun SignUp() {
+fun SignUpScreen(
+    navController: NavController,
+    viewModel: UserViewModel
+) {
     // id text remeber를 통한 변수 변경
     var textId by remember { mutableStateOf("") }
     // password text remeber를 통한 변수 변경
@@ -117,8 +104,6 @@ fun SignUp() {
                     color = Color.Gray
                 )
             }
-
-            // id text remeber를 통한 변수 변경
 
             Spacer(modifier = Modifier.weight(2f))
             // 윤곽선의 색상 및 두께를 커스텀 가능한 OutLinedTextField
@@ -286,33 +271,18 @@ fun SignUp() {
                 .clickable(
                     enabled = true,
                     onClick = {
-                        Log.d("textId", textId.toString())
-                        Log.d("textPasswd", textPasswd.toString())
-                        when (checkSignUpValue(textId, textPasswd)) {
-                            "idError" -> Toast
-                                .makeText(
-                                    context,
-                                    context?.getString(R.string.sign_up_error), Toast.LENGTH_SHORT
-                                )
-                                .show()
-
-                            "passwdError" -> Toast
-                                .makeText(
-                                    context,
-                                    context?.getString(R.string.sign_up_paswd),
-                                    Toast.LENGTH_SHORT
-                                )
-                                .show()
-
-                            else -> {
-                                // 회원가입 성공 결과 반환, intent에 담아 넣음
-                                val data = Intent().apply {
-                                    putExtra("id", textId)
-                                    putExtra("password", textPasswd)
+                        // viewModel의 signUp을 통해 success boolean 판단
+                        viewModel.signUp(textId, textPasswd) { success, error ->
+                            if (success) {
+                                navController.navigate("login") // 성공 시 로그인으로
+                            } else {
+                                error.let {
+                                    Toast.makeText(
+                                        context,
+                                        context?.getString(it),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
-                                // activityResultLauncher 의 반환은 setResult가 Result_OK일 때, data와 같이
-                                context?.setResult(RESULT_OK, data)
-                                context?.finish()
                             }
                         }
                     }
@@ -320,13 +290,5 @@ fun SignUp() {
             textAlign = TextAlign.Center
         )
 
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    ANDANDROIDTheme {
-        SignUp()
     }
 }
