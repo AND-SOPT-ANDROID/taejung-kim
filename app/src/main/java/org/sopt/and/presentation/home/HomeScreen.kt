@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,12 +18,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,19 +36,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import org.sopt.and.R
 import org.sopt.and.presentation.home.Component.MovieList
+import org.sopt.and.presentation.main.MainViewModel
 import org.sopt.and.ui.theme.Typography
-
-val movies = listOf(
-    MovieData("1", R.drawable.movie1),
-    MovieData("2", R.drawable.movie2),
-    MovieData("3", R.drawable.movie3),
-    MovieData("4", R.drawable.movie4),
-    MovieData("5", R.drawable.movie5)
-)
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(viewModel: MainViewModel) {
+    val movies by viewModel.movies.collectAsState()
+    val categories by viewModel.categories.collectAsState()
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -58,14 +51,14 @@ fun HomeScreen() {
     ) {
         item { HomeTopBar() }
         stickyHeader {
-            HomeCategory()
+            HomeCategory(categories)
         }
-        item { HomeTopBanner() }
+        item { HomeTopBanner(movies) }
         item {
-            HomeEditor()
+            HomeEditor(movies)
             Spacer(modifier = Modifier.height(20.dp))
         }
-        item{HomeTop20()}
+        item{HomeTop20(movies)}
     }
 }
 
@@ -97,25 +90,15 @@ fun HomeTopBar() {
 }
 
 @Composable
-fun HomeCategory() {
-    val textList = listOf(
-        stringResource(R.string.home_category_new_classic),
-        stringResource(R.string.home_category_drama),
-        stringResource(R.string.home_category_entertain),
-        stringResource(R.string.home_category_movie),
-        stringResource(R.string.home_category_animation),
-        stringResource(R.string.home_cateogry_foreign),
-        stringResource(R.string.home_category_normal),
-        stringResource(R.string.home_category_kids)
-    )
+fun HomeCategory(categories: List<Int>) {
     LazyRow(
         modifier = Modifier
             .background(Color.Black)
             .padding(vertical = 15.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        items(textList.size){ index ->
-            Text(text = textList[index],
+        items(categories.size){ index ->
+            Text(text = stringResource(categories[index]),
                 fontSize = 16.sp,
                 color = Color.LightGray,
                 style = Typography.bodyMedium)
@@ -124,17 +107,17 @@ fun HomeCategory() {
 }
 
 @Composable
-fun HomeTop20() {
+fun HomeTop20(movies: List<MovieData>) {
     MovieList(stringResource(R.string.home_top_20), movies)
 }
 
 @Composable
-fun HomeEditor() {
+fun HomeEditor(movies: List<MovieData>) {
     MovieList(stringResource(R.string.home_trust_editor), movies)
 }
 
 @Composable
-fun HomeTopBanner() {
+fun HomeTopBanner(movies: List<MovieData>) {
     // xml의 viewPager와 유사
     val pagerState = rememberPagerState(
         pageCount = {movies.size}  // 영화 리스트의 크기
@@ -174,5 +157,5 @@ fun HomeTopBanner() {
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenShow(){
-    HomeScreen()
+    HomeScreen(viewModel = MainViewModel())
 }

@@ -28,7 +28,7 @@ import org.sopt.and.ui.theme.Gray2
 import org.sopt.and.ui.theme.Typography
 
 @Composable
-fun MyScreen(paddingValues: PaddingValues, mainViewModel: MainViewModel) {
+fun MyScreen(paddingValues: PaddingValues) {
 
     // ViewModel에서 LiveData를 관찰
     // runtime-livedata 라이브러리를 이용
