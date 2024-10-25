@@ -31,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -38,12 +39,17 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import org.sopt.and.R
+import org.sopt.and.presentation.signup.Component.IdTextField
+import org.sopt.and.presentation.signup.Component.PasswordField
 
 @Composable
 fun SignUpScreen(
     navController: NavController,
     viewModel: UserViewModel
 ) {
+    // textStyle 변경을 위한 textFieldValue 추적
+    val idState = remember { mutableStateOf(TextFieldValue()) }
+    val passwordState = remember { mutableStateOf(TextFieldValue()) }
     // id text remeber를 통한 변수 변경
     var textId by remember { mutableStateOf("") }
     // password text remeber를 통한 변수 변경
@@ -106,15 +112,9 @@ fun SignUpScreen(
             }
 
             Spacer(modifier = Modifier.weight(2f))
-            // 윤곽선의 색상 및 두께를 커스텀 가능한 OutLinedTextField
-            OutlinedTextField(
-                value = textId,
-                onValueChange = { textId = it },
-                modifier = Modifier
-                    .fillMaxWidth(),
-                textStyle = TextStyle(Color.White),
-                placeholder = { Text("wavve@example.com") },
-                singleLine = true,
+            IdTextField(
+                valueState = idState,
+                modifier = Modifier.padding(bottom = 8.dp)
             )
 
             Spacer(modifier = Modifier.weight(0.5f))
@@ -135,30 +135,9 @@ fun SignUpScreen(
             }
 
             Spacer(modifier = Modifier.weight(1f))
-            // password boolean remeber를 통한 숨김 UI 변경
-            var passwdVisible by remember { mutableStateOf(false) }
-            OutlinedTextField(
-                value = textPasswd,
-                onValueChange = { textPasswd = it },
-                modifier = Modifier
-                    .fillMaxWidth(),
-                placeholder = { Text("Wavve 비밀번호 설정") },
-                textStyle = TextStyle(Color.White),
-                singleLine = true,
-                // passwdVisible boolean에 따라 표시가 다르게
-                visualTransformation = if (passwdVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                // show, hide 표시
-                trailingIcon = {
-                    val text = if (passwdVisible) "hide" else "show"
-                    Text(text = text,
-                        color = Color.White,
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp)
-                            .clickable {
-                                passwdVisible = !passwdVisible
-                            })
-                }
-
+            PasswordField(
+                passwordState = passwordState,
+                modifier = Modifier.padding(top = 8.dp)
             )
 
             Spacer(modifier = Modifier.weight(0.5f))

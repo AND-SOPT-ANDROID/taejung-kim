@@ -44,6 +44,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -54,6 +55,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.sopt.and.R
 import org.sopt.and.presentation.main.MainActivity
+import org.sopt.and.presentation.signup.Component.IdTextField
+import org.sopt.and.presentation.signup.Component.PasswordField
 import org.sopt.and.presentation.signup.UserViewModel
 
 @Composable
@@ -62,6 +65,9 @@ fun LogInScreen(
     viewModel: UserViewModel
 
 ) {
+    // textStyle 변경을 위한 textFieldValue 추적
+    val idState = remember { mutableStateOf(TextFieldValue()) }
+    val passwordState = remember { mutableStateOf(TextFieldValue()) }
     val loginResult by viewModel.loginResult.observeAsState()
     val context = LocalContext.current as Activity
     val snackbarHostState = remember { SnackbarHostState() }
@@ -102,44 +108,18 @@ fun LogInScreen(
 
             Spacer(modifier = Modifier.weight(2f))
             // 윤곽선의 색상 및 두께를 커스텀 가능한 OutLinedTextField
-            OutlinedTextField(
-                value = textId,
-                textStyle = TextStyle(Color.White),
-                onValueChange = { textId = it },
-                modifier = Modifier
-                    .fillMaxWidth(),
-                placeholder = { Text(stringResource(R.string.log_in_id)) },
-                singleLine = true,
+            IdTextField(
+                valueState = idState,
+                modifier = Modifier.padding(bottom = 8.dp)
             )
 
 
             Spacer(modifier = Modifier.height(10.dp))
             // password text remeber를 통한 변수 변경
             var textPasswd by remember { mutableStateOf("") }
-            // password boolean remeber를 통한 숨김 UI 변경
-            var passwdVisible by remember { mutableStateOf(false) }
-            OutlinedTextField(
-                value = textPasswd,
-                textStyle = TextStyle(Color.White),
-                onValueChange = { textPasswd = it },
-                modifier = Modifier
-                    .fillMaxWidth(),
-                placeholder = { Text(stringResource(R.string.log_in_passwd)) },
-                singleLine = true,
-                // passwdVisible boolean에 따라 표시가 다르게
-                visualTransformation = if (passwdVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                // show, hide 표시
-                trailingIcon = {
-                    val text = if (passwdVisible) "hide" else "show"
-                    Text(text = text,
-                        color = Color.White,
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp)
-                            .clickable {
-                                passwdVisible = !passwdVisible
-                            })
-                }
-
+            PasswordField(
+                passwordState = passwordState,
+                modifier = Modifier.padding(top = 8.dp)
             )
 
             Spacer(modifier = Modifier.weight(1f))
