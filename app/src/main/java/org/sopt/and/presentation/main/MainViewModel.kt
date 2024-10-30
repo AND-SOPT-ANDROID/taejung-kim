@@ -26,29 +26,27 @@ class MainViewModel : ViewModel() {
     }
 
     private fun loadCategories() {
-        viewModelScope.launch {
-            _categories.value = listOf(
-                R.string.home_category_new_classic,
-                R.string.home_category_drama,
-                R.string.home_category_entertain,
-                R.string.home_category_movie,
-                R.string.home_category_animation,
-                R.string.home_cateogry_foreign,
-                R.string.home_category_normal,
-                R.string.home_category_kids
-            )
-        }
+        _categories.value = listOf(
+            R.string.home_category_new_classic,
+            R.string.home_category_drama,
+            R.string.home_category_entertain,
+            R.string.home_category_movie,
+            R.string.home_category_animation,
+            R.string.home_cateogry_foreign,
+            R.string.home_category_normal,
+            R.string.home_category_kids
+        )
+
     }
 
     private fun loadMovies() {
-        viewModelScope.launch {
-            _movies.value = listOf(
-                MovieData("1", R.drawable.movie1),
-                MovieData("2", R.drawable.movie2),
-                MovieData("3", R.drawable.movie3),
-                MovieData("4", R.drawable.movie4),
-                MovieData("5", R.drawable.movie5)
-            )
-        }
+        _movies.value = listOf(
+            MovieData("1", R.drawable.movie1),
+            MovieData("2", R.drawable.movie2),
+            MovieData("3", R.drawable.movie3),
+            MovieData("4", R.drawable.movie4),
+            MovieData("5", R.drawable.movie5)
+        )
+
     }
 }
