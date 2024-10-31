@@ -119,19 +119,22 @@ fun HomeEditor(movies: List<MovieData>) {
 
 @Composable
 fun HomeTopBanner(movies: List<MovieData>) {
-    // xml의 viewPager와 유사
+    // 실제 페이지 수는 movies.size, 무한 스크롤을 위해 임의의 정수 사용
+    val actualPageCount = movies.size
+    val infinitePageCount = 100
+    val initialPageIndex = infinitePageCount / 2 // 양쪽 무한 스크롤을 위해 가운데 값으로 선정
+
     val pagerState = rememberPagerState(
-        pageCount = {movies.size}  // 영화 리스트의 크기
+        initialPage = initialPageIndex,
+        pageCount = { infinitePageCount }
     )
 
-    // java의 void와 유사
     LaunchedEffect(Unit) {
         while (isActive) {
             delay(3000)  // 3초마다 페이지 변경
             with(pagerState) {
-                // 마지막 페이지까지 가면 다시 처음으로 이동
-                val nextPage = if (currentPage == pageCount - 1) 0 else currentPage + 1
-                animateScrollToPage(nextPage)  // 해당 페이지로 스크롤 애니메이션
+                val nextPage = currentPage + 1
+                animateScrollToPage(nextPage)
             }
         }
     }
@@ -147,8 +150,10 @@ fun HomeTopBanner(movies: List<MovieData>) {
                 .fillMaxWidth()
                 .aspectRatio(0.7f)
         ) { page ->
+            // 현재 페이지의 나머지 값으로 index 설정
+            val movieIndex = page % actualPageCount
             Image(
-                painter = painterResource(id = movies[page].img),
+                painter = painterResource(id = movies[movieIndex].img),
                 contentDescription = "Top Banner 이미지",
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
@@ -160,7 +165,7 @@ fun HomeTopBanner(movies: List<MovieData>) {
                 .padding(bottom = 10.dp, end = 50.dp)
         ) {
             Text(
-                text = "${pagerState.currentPage + 1} / ${movies.size}",
+                text = "${pagerState.currentPage % actualPageCount + 1} / $actualPageCount",
                 color = Color.White,
                 fontSize = 16.sp,
                 modifier = Modifier
