@@ -1,7 +1,7 @@
-package org.sopt.and
+package org.sopt.and.presentation.signup
 
-import org.sopt.and.RegExPattern.idPattern
-import org.sopt.and.RegExPattern.passwdPattern
+import org.sopt.and.util.RegExPattern.idPattern
+import org.sopt.and.util.RegExPattern.passwdPattern
 
 // 아이디 비밀번호 검증하는 함수 생성
 fun checkSignUpValue(id: String, passwd: String): String {

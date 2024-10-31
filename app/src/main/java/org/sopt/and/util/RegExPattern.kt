@@ -1,4 +1,4 @@
-package org.sopt.and
+package org.sopt.and.util
 
 // 정규표현식 객체 생성
 object RegExPattern {

@@ -1,14 +1,8 @@
-package org.sopt.and
+package org.sopt.and.presentation.signup
 
 import android.app.Activity
-import android.app.Activity.RESULT_OK
-import android.content.Intent
-import android.graphics.Paint
-import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,33 +32,48 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.startActivity
-import org.sopt.and.ui.theme.ANDANDROIDTheme
-import org.sopt.and.ui.theme.Typography
-
-class SignUpActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            ANDANDROIDTheme {
-                SignUp()
-            }
-        }
-    }
-}
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import org.sopt.and.R
+import org.sopt.and.presentation.signup.Component.IdTextField
+import org.sopt.and.presentation.signup.Component.PasswordField
 
 @Composable
-fun SignUp() {
+fun SignUpScreen(
+    navController: NavController,
+    viewModel: UserViewModel
+) {
+    // textStyle 변경을 위한 textFieldValue 추적
+    val idState = remember { mutableStateOf(TextFieldValue()) }
+    val passwordState = remember { mutableStateOf(TextFieldValue()) }
     // id text remeber를 통한 변수 변경
     var textId by remember { mutableStateOf("") }
     // password text remeber를 통한 변수 변경
     var textPasswd by remember { mutableStateOf("") }
-    val context = LocalContext.current as? Activity
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val signUpSate by viewModel.signUpState.collectAsStateWithLifecycle(lifecycleOwner)
+    val context = LocalContext.current
+    // 모든 textFiled가 채워졌는지 판단하는 변수
+    val allFieldFilled = idState.value.text.isNotEmpty() && passwordState.value.text.isNotEmpty()
+
+
+    LaunchedEffect(signUpSate) {
+        when (signUpSate) {
+            is UserViewModel.SignUpState.Success -> {
+                navController.navigate("login")
+            }
+            is UserViewModel.SignUpState.Error -> {
+                Toast.makeText(context, context.getString((signUpSate as UserViewModel.SignUpState.Error).messageResId), Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     Box(
         // column 과 Box 구분
@@ -120,18 +130,10 @@ fun SignUp() {
                 )
             }
 
-            // id text remeber를 통한 변수 변경
-
             Spacer(modifier = Modifier.weight(2f))
-            // 윤곽선의 색상 및 두께를 커스텀 가능한 OutLinedTextField
-            OutlinedTextField(
-                value = textId,
-                onValueChange = { textId = it },
-                modifier = Modifier
-                    .fillMaxWidth(),
-                textStyle = TextStyle(Color.White),
-                placeholder = { Text("wavve@example.com") },
-                singleLine = true,
+            IdTextField(
+                valueState = idState,
+                modifier = Modifier.padding(bottom = 8.dp)
             )
 
             Spacer(modifier = Modifier.weight(0.5f))
@@ -152,30 +154,9 @@ fun SignUp() {
             }
 
             Spacer(modifier = Modifier.weight(1f))
-            // password boolean remeber를 통한 숨김 UI 변경
-            var passwdVisible by remember { mutableStateOf(false) }
-            OutlinedTextField(
-                value = textPasswd,
-                onValueChange = { textPasswd = it },
-                modifier = Modifier
-                    .fillMaxWidth(),
-                placeholder = { Text("Wavve 비밀번호 설정") },
-                textStyle = TextStyle(Color.White),
-                singleLine = true,
-                // passwdVisible boolean에 따라 표시가 다르게
-                visualTransformation = if (passwdVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                // show, hide 표시
-                trailingIcon = {
-                    val text = if (passwdVisible) "hide" else "show"
-                    Text(text = text,
-                        color = Color.White,
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp)
-                            .clickable {
-                                passwdVisible = !passwdVisible
-                            })
-                }
-
+            PasswordField(
+                passwordState = passwordState,
+                modifier = Modifier.padding(top = 8.dp)
             )
 
             Spacer(modifier = Modifier.weight(0.5f))
@@ -281,54 +262,23 @@ fun SignUp() {
             text = "Wavve 회원가입",
             color = Color.White,
             modifier = Modifier
-                .background(Color.Gray)
+                .background(
+                    if (allFieldFilled) Color.Blue else Color.Gray,
+                )
                 .padding(10.dp)
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
                 .clickable(
-                    enabled = true,
+                    enabled = allFieldFilled,
                     onClick = {
-                        Log.d("textId", textId.toString())
-                        Log.d("textPasswd", textPasswd.toString())
-                        when (checkSignUpValue(textId, textPasswd)) {
-                            "idError" -> Toast
-                                .makeText(
-                                    context,
-                                    context?.getString(R.string.sign_up_error), Toast.LENGTH_SHORT
-                                )
-                                .show()
-
-                            "passwdError" -> Toast
-                                .makeText(
-                                    context,
-                                    context?.getString(R.string.sign_up_paswd),
-                                    Toast.LENGTH_SHORT
-                                )
-                                .show()
-
-                            else -> {
-                                // 회원가입 성공 결과 반환, intent에 담아 넣음
-                                val data = Intent().apply {
-                                    putExtra("id", textId)
-                                    putExtra("password", textPasswd)
-                                }
-                                // activityResultLauncher 의 반환은 setResult가 Result_OK일 때, data와 같이
-                                context?.setResult(RESULT_OK, data)
-                                context?.finish()
-                            }
-                        }
+                        textId = idState.value.text
+                        textPasswd = passwordState.value.text
+                        // viewModel의 signUp을 통해 success boolean 판단
+                        viewModel.signUp(textId, textPasswd)
                     }
                 ),
             textAlign = TextAlign.Center
         )
 
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    ANDANDROIDTheme {
-        SignUp()
     }
 }
