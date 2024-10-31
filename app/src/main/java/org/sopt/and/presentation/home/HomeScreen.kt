@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -135,22 +136,38 @@ fun HomeTopBanner(movies: List<MovieData>) {
         }
     }
 
-    HorizontalPager(
-        state = pagerState,
-        pageSpacing = 8.dp,
-        contentPadding = PaddingValues(horizontal = 32.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .aspectRatio(0.7f),
-
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .padding(vertical = 10.dp)) {
+        HorizontalPager(
+            state = pagerState,
+            pageSpacing = 8.dp,
+            contentPadding = PaddingValues(horizontal = 32.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(0.7f)
         ) { page ->
-        // 각 페이지에 이미지 표시
-        Image(
-            painter = painterResource(id = movies[page].img),
-            contentDescription = "Top Banner 이미지",
-            modifier = Modifier.fillMaxWidth(),
-            contentScale = ContentScale.Crop
-        )
+            Image(
+                painter = painterResource(id = movies[page].img),
+                contentDescription = "Top Banner 이미지",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+        }
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(bottom = 10.dp, end = 50.dp)
+        ) {
+            Text(
+                text = "${pagerState.currentPage + 1} / ${movies.size}",
+                color = Color.White,
+                fontSize = 16.sp,
+                modifier = Modifier
+                    .background(Color.Black)
+                    .padding(4.dp)
+            )
+        }
     }
 }
 
