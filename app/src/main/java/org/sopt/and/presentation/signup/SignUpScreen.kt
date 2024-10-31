@@ -60,6 +60,9 @@ fun SignUpScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     val signUpSate by viewModel.signUpState.collectAsStateWithLifecycle(lifecycleOwner)
     val context = LocalContext.current
+    // 모든 textFiled가 채워졌는지 판단하는 변수
+    val allFieldFilled = idState.value.text.isNotEmpty() && passwordState.value.text.isNotEmpty()
+
 
     LaunchedEffect(signUpSate) {
         when (signUpSate) {
@@ -259,12 +262,14 @@ fun SignUpScreen(
             text = "Wavve 회원가입",
             color = Color.White,
             modifier = Modifier
-                .background(Color.Gray)
+                .background(
+                    if (allFieldFilled) Color.Blue else Color.Gray,
+                )
                 .padding(10.dp)
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
                 .clickable(
-                    enabled = true,
+                    enabled = allFieldFilled,
                     onClick = {
                         textId = idState.value.text
                         textPasswd = passwordState.value.text
