@@ -30,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -68,7 +69,7 @@ fun LogInScreen(
     // textStyle 변경을 위한 textFieldValue 추적
     val idState = remember { mutableStateOf(TextFieldValue()) }
     val passwordState = remember { mutableStateOf(TextFieldValue()) }
-    val loginResult by viewModel.loginResult.observeAsState()
+    val loginState = viewModel.loginState.collectAsState(initial = null)
     val context = LocalContext.current as Activity
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -124,7 +125,10 @@ fun LogInScreen(
 
             Spacer(modifier = Modifier.weight(1f))
             Button(
-                onClick = {viewModel.logIn(textId, textPasswd)},
+                onClick = {
+                    textId = idState.value.text
+                    textPasswd = passwordState.value.text
+                    viewModel.logIn(textId, textPasswd)},
                 modifier = Modifier.fillMaxWidth(),
                 contentPadding = PaddingValues(16.dp),
                 // ButtonDefaults 의 4가지 형태
@@ -143,20 +147,20 @@ fun LogInScreen(
             }
 
             // viewModel의 loginResult을 옵저빙하여 로그인 이동
-            LaunchedEffect(loginResult) {
-                loginResult?.let {
-                    if (it) {
+            LaunchedEffect(loginState.value) {
+                when (loginState.value) {
+                    UserViewModel.LogInSate.Success -> {
                         navController.navigate("mainScreen") {
-                            // navigation stack에서 이전 화면 제거
                             popUpTo("login") { inclusive = true }
                         }
-                    } else {
-                        // 스낵바 간소화
+                    }
+                    UserViewModel.LogInSate.Error -> {
                         snackbarHostState.showSnackbar(
                             message = context.getString(R.string.log_in_error),
                             actionLabel = context.getString(R.string.log_in_ok)
                         )
                     }
+                    else -> Unit
                 }
             }
 

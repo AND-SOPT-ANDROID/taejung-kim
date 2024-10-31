@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,6 +37,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import org.sopt.and.R
@@ -54,7 +57,20 @@ fun SignUpScreen(
     var textId by remember { mutableStateOf("") }
     // password text remeber를 통한 변수 변경
     var textPasswd by remember { mutableStateOf("") }
-    val context = LocalContext.current as? Activity
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val signUpSate by viewModel.signUpState.collectAsStateWithLifecycle(lifecycleOwner)
+    val context = LocalContext.current
+
+    LaunchedEffect(signUpSate) {
+        when (signUpSate) {
+            is UserViewModel.SignUpState.Success -> {
+                navController.navigate("login")
+            }
+            is UserViewModel.SignUpState.Error -> {
+                Toast.makeText(context, context.getString((signUpSate as UserViewModel.SignUpState.Error).messageResId), Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     Box(
         // column 과 Box 구분
@@ -250,20 +266,10 @@ fun SignUpScreen(
                 .clickable(
                     enabled = true,
                     onClick = {
+                        textId = idState.value.text
+                        textPasswd = passwordState.value.text
                         // viewModel의 signUp을 통해 success boolean 판단
-                        viewModel.signUp(textId, textPasswd) { success, error ->
-                            if (success) {
-                                navController.navigate("login") // 성공 시 로그인으로
-                            } else {
-                                error.let {
-                                    Toast.makeText(
-                                        context,
-                                        context?.getString(it),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            }
-                        }
+                        viewModel.signUp(textId, textPasswd)
                     }
                 ),
             textAlign = TextAlign.Center
