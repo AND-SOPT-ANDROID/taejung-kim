@@ -42,12 +42,13 @@ import org.sopt.and.ui.theme.Typography
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HomeScreen(viewModel: MainViewModel) {
+fun HomeScreen(viewModel: MainViewModel, paddingValues: PaddingValues) {
     val movies by viewModel.movies.collectAsState()
     val categories by viewModel.categories.collectAsState()
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
+            .padding(paddingValues)
             .background(Color.Black)
     ) {
         item { HomeTopBar() }
@@ -179,5 +180,5 @@ fun HomeTopBanner(movies: List<MovieData>) {
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenShow(){
-    HomeScreen(viewModel = MainViewModel())
+    HomeScreen(viewModel = MainViewModel(), paddingValues = PaddingValues())
 }
