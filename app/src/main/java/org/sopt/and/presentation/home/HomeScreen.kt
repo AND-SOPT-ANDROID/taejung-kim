@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -36,7 +35,7 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import org.sopt.and.R
-import org.sopt.and.presentation.home.Component.MovieList
+import org.sopt.and.presentation.home.components.MovieList
 import org.sopt.and.presentation.main.MainViewModel
 import org.sopt.and.ui.theme.Typography
 
