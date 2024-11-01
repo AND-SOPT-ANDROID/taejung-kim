@@ -1,20 +1,15 @@
 package org.sopt.and.presentation.signup
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import org.sopt.and.R
 import org.sopt.and.domain.SharedPreferenceManager
 
 class UserViewModel : ViewModel() {
-    private var userId = ""
-    private var userPassword = ""
+    private var userData = UserData()
 
     // 로그인 상태를 관리하기 위한 LiveData
     private val _loginState = MutableSharedFlow<LogInState>()
@@ -30,8 +25,7 @@ class UserViewModel : ViewModel() {
                 "idError" -> _signUpState.emit(SignUpState.Error(R.string.sign_up_error))
                 "passwdError" -> _signUpState.emit(SignUpState.Error(R.string.sign_up_paswd))
                 else -> {
-                    userId = id
-                    userPassword = password
+                    userData = UserData(id, password)
                     _signUpState.emit(SignUpState.Success)
                 }
             }
@@ -41,9 +35,9 @@ class UserViewModel : ViewModel() {
     // 로그인 로직
     fun logIn(id: String, password: String) {
         viewModelScope.launch {
-            if (id == userId && password == userPassword) {
+            if (id == userData.userId && password == userData.userPassword) {
                 _loginState.emit(LogInState.Success)
-                SharedPreferenceManager.saveUserId(userId)
+                SharedPreferenceManager.saveUserId(userData.userId)
             } else {
                 _loginState.emit(LogInState.Error)
             }
