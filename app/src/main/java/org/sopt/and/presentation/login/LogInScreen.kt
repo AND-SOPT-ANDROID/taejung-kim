@@ -136,12 +136,12 @@ fun LogInScreen(
             // viewModel의 loginResult을 옵저빙하여 로그인 이동
             LaunchedEffect(loginState.value) {
                 when (loginState.value) {
-                    UserViewModel.LogInSate.Success -> {
+                    UserViewModel.LogInState.Success -> {
                         navController.navigate("mainScreen") {
                             popUpTo("login") { inclusive = true }
                         }
                     }
-                    UserViewModel.LogInSate.Error -> {
+                    UserViewModel.LogInState.Error -> {
                         snackbarHostState.showSnackbar(
                             message = context.getString(R.string.log_in_error),
                             actionLabel = context.getString(R.string.log_in_ok)

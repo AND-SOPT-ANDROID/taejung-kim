@@ -17,7 +17,7 @@ class UserViewModel : ViewModel() {
     private var userPassword = ""
 
     // 로그인 상태를 관리하기 위한 LiveData
-    private val _loginState = MutableSharedFlow<LogInSate>()
+    private val _loginState = MutableSharedFlow<LogInState>()
     val loginState = _loginState.asSharedFlow()
 
     private val _signUpState = MutableSharedFlow<SignUpState>()
@@ -46,9 +46,9 @@ class UserViewModel : ViewModel() {
             Log.d("password", password)
             Log.d("userPassword", userPassword)
             if (id == userId && password == userPassword) {
-                _loginState.emit(LogInSate.Success)
+                _loginState.emit(LogInState.Success)
             } else {
-                _loginState.emit(LogInSate.Error)
+                _loginState.emit(LogInState.Error)
             }
         }
     }
@@ -58,8 +58,8 @@ class UserViewModel : ViewModel() {
         data class Error(val messageResId: Int) : SignUpState()
     }
 
-    sealed class LogInSate {
-        object Success : LogInSate()
-        object Error : LogInSate()
+    sealed class LogInState {
+        object Success : LogInState()
+        object Error : LogInState()
     }
 }
