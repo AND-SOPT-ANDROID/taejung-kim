@@ -3,28 +3,22 @@ package org.sopt.and.presentation.login
 import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,6 +40,7 @@ import org.sopt.and.presentation.signup.components.AnotherServiceLogIn
 import org.sopt.and.presentation.signup.components.IdTextField
 import org.sopt.and.presentation.signup.components.PasswordField
 import org.sopt.and.presentation.signup.UserViewModel
+import org.sopt.and.presentation.login.components.HandleLogInSection
 
 @Composable
 fun LogInScreen(
@@ -133,72 +128,16 @@ fun LogInScreen(
                 Text(text = stringResource(R.string.log_in_execute))
             }
 
-            // viewModel의 loginResult을 옵저빙하여 로그인 이동
-            LaunchedEffect(loginState.value) {
-                when (loginState.value) {
-                    UserViewModel.LogInState.Success -> {
-                        navController.navigate("mainScreen") {
-                            popUpTo("login") { inclusive = true }
-                        }
-                    }
-                    UserViewModel.LogInState.Error -> {
-                        snackbarHostState.showSnackbar(
-                            message = context.getString(R.string.log_in_error),
-                            actionLabel = context.getString(R.string.log_in_ok)
-                        )
-                    }
-                    else -> Unit
-                }
-            }
-
             Spacer(modifier = Modifier.weight(1f))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(
-                    stringResource(R.string.log_in_find_id),
-                    fontSize = 12.sp,
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    color = Color.Gray
-                )
-
-                VerticalDivider(
-                    color = Color.Gray,
-                    modifier = Modifier
-                        .height(12.dp)
-                        .width(1.dp)
-                )
-
-                Text(
-                    text = stringResource(R.string.log_in_passwd_change),
-                    fontSize = 12.sp,
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    color = Color.Gray
-                )
-
-                VerticalDivider(
-                    color = Color.Gray,
-                    modifier = Modifier
-                        .height(12.dp)
-                        .width(1.dp)
-                )
-
-                Text(
-                    text = stringResource(R.string.log_in_sign_up),
-                    fontSize = 12.sp,
-                    modifier = Modifier
-                        .padding(horizontal = 8.dp)
-                        .clickable(
-                            enabled = true,
-                            onClick = {navController.navigate("signup")}
-                        ),
-                    color = Color.Gray,
-                )
-            }
-
+            // 아이디 찾기, 비밀번호, 회원가입 컴포넌트
+            HandleLogInSection(
+                navController = navController,
+                loginState = loginState,
+                snackbarHostState = snackbarHostState,
+                context = context
+            )
             Spacer(modifier = Modifier.weight(1f))
+            // 또는 다른 서비스 계정 컴포넌트
             AnotherServiceLogIn()
             Spacer(modifier = Modifier.weight(7f))
         }
