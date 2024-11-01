@@ -36,6 +36,7 @@ import org.sopt.and.R
 import org.sopt.and.presentation.signup.components.AnotherServiceLogIn
 import org.sopt.and.presentation.signup.components.IdTextField
 import org.sopt.and.presentation.signup.components.PasswordField
+import org.sopt.and.presentation.signup.components.SignUpInfoRow
 
 @Composable
 fun SignUpScreen(
@@ -129,21 +130,10 @@ fun SignUpScreen(
             )
 
             Spacer(modifier = Modifier.weight(0.5f))
-            Row {
-                Image(
-                    painter = painterResource(R.drawable.ic_info),
-                    contentDescription = "info",
-                    modifier = Modifier
-                        .size(24.dp)
-                        .padding(end = 4.dp)
-                )
-                Text(
-                    text = stringResource(R.string.sign_up_id),
-                    modifier = Modifier.weight(1f),
-                    color = Color.Gray,
-                    fontSize = 12.sp,
-                )
-            }
+            SignUpInfoRow(
+                iconRes = R.drawable.ic_info,
+                text = stringResource(R.string.sign_up_id)
+            )
 
             Spacer(modifier = Modifier.weight(1f))
             PasswordField(
@@ -152,21 +142,10 @@ fun SignUpScreen(
             )
 
             Spacer(modifier = Modifier.weight(0.5f))
-            Row {
-                Image(
-                    painter = painterResource(R.drawable.ic_info),
-                    contentDescription = "info",
-                    modifier = Modifier
-                        .size(24.dp)
-                        .padding(end = 4.dp)
-                )
-                Text(
-                    text = stringResource(R.string.sign_up_passwd),
-                    modifier = Modifier.weight(1f),
-                    color = Color.Gray,
-                    fontSize = 12.sp
-                )
-            }
+            SignUpInfoRow(
+                iconRes = R.drawable.ic_info,
+                text = stringResource(R.string.sign_up_passwd)
+            )
 
             Spacer(modifier = Modifier.weight(2f))
             AnotherServiceLogIn()

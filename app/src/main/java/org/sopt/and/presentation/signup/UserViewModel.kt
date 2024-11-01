@@ -41,12 +41,9 @@ class UserViewModel : ViewModel() {
     // 로그인 로직
     fun logIn(id: String, password: String) {
         viewModelScope.launch {
-            Log.d("id", id)
-            Log.d("userId", userId)
-            Log.d("password", password)
-            Log.d("userPassword", userPassword)
             if (id == userId && password == userPassword) {
                 _loginState.emit(LogInState.Success)
+                SharedPreferenceManager.saveUserId(userId)
             } else {
                 _loginState.emit(LogInState.Error)
             }
