@@ -38,6 +38,7 @@ import org.sopt.and.presentation.signup.components.IdTextField
 import org.sopt.and.presentation.signup.components.PasswordField
 import org.sopt.and.presentation.signup.components.SignUpInfoRow
 import org.sopt.and.presentation.signup.components.SignUpTitle
+import org.sopt.and.util.showToast
 
 @Composable
 fun SignUpScreen(
@@ -64,7 +65,8 @@ fun SignUpScreen(
                 navController.navigate("login")
             }
             is UserViewModel.SignUpState.Error -> {
-                Toast.makeText(context, context.getString((signUpSate as UserViewModel.SignUpState.Error).messageResId), Toast.LENGTH_SHORT).show()
+                // 캐스트
+                context.showToast((signUpSate as UserViewModel.SignUpState.Error).messageResId)
             }
         }
     }
