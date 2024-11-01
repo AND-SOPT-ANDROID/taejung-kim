@@ -65,22 +65,22 @@ fun SocialIconLine(){
         horizontalArrangement = Arrangement.Center
     ) {
         Spacer(modifier = Modifier.weight(4f))
-        SocialIcon(iconRes = R.drawable.ic_kakao, contentDescription = "카카오 로고")
+        SocialIcon(iconResId = R.drawable.ic_kakao, contentDescription = "카카오 로고")
         Spacer(modifier = Modifier.weight(1f))
-        SocialIcon(iconRes = R.drawable.ic_face_book, contentDescription = "페이스북 로고")
+        SocialIcon(iconResId = R.drawable.ic_face_book, contentDescription = "페이스북 로고")
         Spacer(modifier = Modifier.weight(1f))
-        SocialIcon(iconRes = R.drawable.ic_github, contentDescription = "깃허브 로고")
+        SocialIcon(iconResId = R.drawable.ic_github, contentDescription = "깃허브 로고")
         Spacer(modifier = Modifier.weight(1f))
-        SocialIcon(iconRes = R.drawable.ic_discord, contentDescription = "디스코드 로고")
+        SocialIcon(iconResId = R.drawable.ic_discord, contentDescription = "디스코드 로고")
         Spacer(modifier = Modifier.weight(1f))
-        SocialIcon(iconRes = R.drawable.ic_kakao, contentDescription = "카카오 로고")
+        SocialIcon(iconResId = R.drawable.ic_kakao, contentDescription = "카카오 로고")
         Spacer(modifier = Modifier.weight(4f))
     }
 }
 
 @Composable
 fun SocialIcon(
-    iconRes: Int,
+    iconResId: Int,
     contentDescription: String,
     onClick: () -> Unit = {}
 ) {
@@ -88,7 +88,7 @@ fun SocialIcon(
         modifier = Modifier
             .size(48.dp)
             .clickable(onClick = onClick), // 추후 SNS 클릭 고려 설정
-        painter = painterResource(id = iconRes),
+        painter = painterResource(id = iconResId),
         contentDescription = contentDescription
     )
 }

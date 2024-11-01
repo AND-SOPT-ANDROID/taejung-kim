@@ -13,10 +13,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun SignUpInfoRow(iconRes: Int, text: String) {
+fun SignUpInfoRow(iconResId: Int, text: String) {
     Row {
         Image(
-            painter = painterResource(iconRes),
+            painter = painterResource(iconResId),
             contentDescription = "info",
             modifier = Modifier
                 .size(24.dp)

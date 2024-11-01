@@ -131,7 +131,7 @@ fun SignUpScreen(
 
             Spacer(modifier = Modifier.weight(0.5f))
             SignUpInfoRow(
-                iconRes = R.drawable.ic_info,
+                iconResId = R.drawable.ic_info,
                 text = stringResource(R.string.sign_up_id)
             )
 
@@ -143,7 +143,7 @@ fun SignUpScreen(
 
             Spacer(modifier = Modifier.weight(0.5f))
             SignUpInfoRow(
-                iconRes = R.drawable.ic_info,
+                iconResId = R.drawable.ic_info,
                 text = stringResource(R.string.sign_up_passwd)
             )
 
