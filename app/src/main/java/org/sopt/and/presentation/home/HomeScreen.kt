@@ -32,16 +32,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import org.sopt.and.R
 import org.sopt.and.presentation.home.components.MovieList
-import org.sopt.and.presentation.main.MainViewModel
 import org.sopt.and.ui.theme.Typography
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HomeScreen(viewModel: MainViewModel, paddingValues: PaddingValues) {
+fun HomeScreen(paddingValues: PaddingValues) {
+    val viewModel: HomeViewModel = viewModel()
+
     val movies by viewModel.movies.collectAsState()
     val categories by viewModel.categories.collectAsState()
     LazyColumn(
@@ -179,5 +181,5 @@ fun HomeTopBanner(movies: List<MovieData>) {
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenShow(){
-    HomeScreen(viewModel = MainViewModel(), paddingValues = PaddingValues())
+    HomeScreen(paddingValues = PaddingValues())
 }

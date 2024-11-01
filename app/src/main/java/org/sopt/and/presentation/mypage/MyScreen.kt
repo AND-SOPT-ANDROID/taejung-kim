@@ -21,7 +21,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import org.sopt.and.presentation.main.MainViewModel
 import org.sopt.and.R
 import org.sopt.and.domain.SharedPreferenceManager
 import org.sopt.and.presentation.mypage.components.MyMovieInfo

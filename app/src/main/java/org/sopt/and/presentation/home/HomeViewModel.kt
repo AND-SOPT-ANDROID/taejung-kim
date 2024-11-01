@@ -1,19 +1,11 @@
-package org.sopt.and.presentation.main
+package org.sopt.and.presentation.home
 
-import android.util.Log
-import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.last
-import kotlinx.coroutines.launch
 import org.sopt.and.R
-import org.sopt.and.presentation.home.MovieData
 
-class MainViewModel : ViewModel() {
+class HomeViewModel : ViewModel() {
     private val _movies = MutableStateFlow<List<MovieData>>(emptyList())
     val movies: StateFlow<List<MovieData>> = _movies
 
