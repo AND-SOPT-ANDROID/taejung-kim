@@ -37,6 +37,7 @@ import org.sopt.and.presentation.signup.components.AnotherServiceLogIn
 import org.sopt.and.presentation.signup.components.IdTextField
 import org.sopt.and.presentation.signup.components.PasswordField
 import org.sopt.and.presentation.signup.components.SignUpInfoRow
+import org.sopt.and.presentation.signup.components.SignUpTitle
 
 @Composable
 fun SignUpScreen(
@@ -97,32 +98,19 @@ fun SignUpScreen(
             }
 
             Spacer(modifier = Modifier.weight(3f))
-            Row {
-                Text(
-                    text = "이메일과 비밀번호",
-                    fontSize = 20.sp,
-                    color = Color.White
-                )
-                Text(
-                    text = "만으로",
-                    fontSize = 20.sp,
-                    color = Color.Gray
-                )
-            }
+            SignUpTitle(
+                firstText = stringResource(R.string.sign_up_title_top_start),
+                firstColor = Color.White,
+                secondText = stringResource(R.string.sign_up_title_top_end),
+                secondColor = Color.Gray
+            )
 
-            Row {
-                Text(
-                    text = "Wavve를 즐길 수 ",
-                    fontSize = 20.sp,
-                    color = Color.White
-                )
-                Text(
-                    text = "있어요!",
-                    fontSize = 20.sp,
-                    color = Color.Gray
-                )
-            }
-
+            SignUpTitle(
+                firstText = stringResource(R.string.sign_up_title_bottom_start),
+                firstColor = Color.White,
+                secondText = stringResource(R.string.sign_up_title_bottom_end),
+                secondColor = Color.Gray
+            )
             Spacer(modifier = Modifier.weight(2f))
             IdTextField(
                 valueState = idState,
