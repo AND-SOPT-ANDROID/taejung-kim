@@ -36,11 +36,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import org.sopt.and.R
+import org.sopt.and.presentation.login.components.AuthManagement
 import org.sopt.and.presentation.signup.components.AnotherServiceLogIn
 import org.sopt.and.presentation.signup.components.IdTextField
 import org.sopt.and.presentation.signup.components.PasswordField
 import org.sopt.and.presentation.signup.UserViewModel
-import org.sopt.and.presentation.login.components.HandleLogInSection
 
 @Composable
 fun LogInScreen(
@@ -130,7 +130,7 @@ fun LogInScreen(
 
             Spacer(modifier = Modifier.weight(1f))
             // 아이디 찾기, 비밀번호, 회원가입 컴포넌트
-            HandleLogInSection(
+            AuthManagement(
                 navController = navController,
                 loginState = loginState,
                 snackbarHostState = snackbarHostState,

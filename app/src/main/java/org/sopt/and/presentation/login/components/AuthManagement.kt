@@ -25,7 +25,7 @@ import org.sopt.and.R
 import org.sopt.and.presentation.signup.UserViewModel
 
 @Composable
-fun HandleLogInSection(
+fun AuthManagement(
     navController: NavController,
     loginState: State<UserViewModel.LogInState?>,
     snackbarHostState: SnackbarHostState,
