@@ -18,6 +18,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.sopt.and.R
 import org.sopt.and.presentation.home.components.MovieEditorItem
 import org.sopt.and.presentation.home.components.MovieList
@@ -31,11 +33,14 @@ fun MyMovieInfo(
     imageResId: Int,
     noContentResId: Int
 ) {
+    val lifecycleOwner = LocalLifecycleOwner.current
+
     // 제목 리소스 ID에 따라 다른 StateFlow를 선택
     val movieList by if (titleResId == R.string.my_watching) {
-        viewModel.myWatching.collectAsState()
+        // collectAsStateWithLifecycle로 변경
+        viewModel.myWatching.collectAsStateWithLifecycle(lifecycleOwner)
     } else
-        viewModel.myInterest.collectAsState()
+        viewModel.myWatching.collectAsStateWithLifecycle(lifecycleOwner)
 
     if (movieList.isNotEmpty()) {
         // 데이터가 있는 경우
