@@ -1,5 +1,6 @@
 package org.sopt.and.presentation.mypage.components
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
@@ -22,7 +23,7 @@ import org.sopt.and.ui.theme.Typography
 fun MyPurchaseInfo(
     headerTextResId: Int,
     buttonTextResId: Int,
-    iconResId: Int,
+    @DrawableRes iconResId: Int,
     contentResId: Int
 ) {
     Text(

@@ -1,5 +1,6 @@
 package org.sopt.and.presentation.mypage.components
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,7 +31,7 @@ import org.sopt.and.ui.theme.Typography
 fun MyMovieInfo(
     viewModel: MyViewModel,
     titleResId: Int,
-    imageResId: Int,
+    @DrawableRes imageResId: Int,
     noContentResId: Int
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
