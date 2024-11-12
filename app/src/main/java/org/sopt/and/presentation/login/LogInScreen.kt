@@ -19,6 +19,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,13 +35,17 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import org.sopt.and.R
 import org.sopt.and.presentation.login.components.AuthManagement
-import org.sopt.and.presentation.signup.components.AnotherServiceLogIn
+import org.sopt.and.presentation.signup.AuthState
+import org.sopt.and.presentation.signup.AuthType
 import org.sopt.and.presentation.signup.components.IdTextField
 import org.sopt.and.presentation.signup.components.PasswordField
 import org.sopt.and.presentation.signup.UserViewModel
+import org.sopt.and.presentation.signup.components.SocialServiceLogIn
 
 @Composable
 fun LogInScreen(
@@ -51,9 +56,30 @@ fun LogInScreen(
     // textStyle 변경을 위한 textFieldValue 추적
     val idState = remember { mutableStateOf(TextFieldValue()) }
     val passwordState = remember { mutableStateOf(TextFieldValue()) }
-    val loginState = viewModel.loginState.collectAsState(initial = null)
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val authState by viewModel.authState.collectAsStateWithLifecycle(lifecycleOwner)
     val context = LocalContext.current as Activity
     val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(authState) {
+        when (authState) {
+            is AuthState.Success -> {
+                if ((authState as AuthState.Success).type == AuthType.LOGIN) {
+                    navController.popBackStack("login", inclusive = true)
+                    navController.navigate("mainScreen")
+                }
+            }
+            is AuthState.Error -> {
+                if ((authState as AuthState.Error).type == AuthType.LOGIN) {
+                    snackbarHostState.showSnackbar(
+                        message = context.getString((authState as AuthState.Error).messageResId),
+                        actionLabel = context.getString(R.string.log_in_ok)
+                    )
+                }
+            }
+            else -> Unit
+        }
+    }
 
     // SnackBar 구현을 위해 Scaffold 안에 정의
     Scaffold(
@@ -130,15 +156,10 @@ fun LogInScreen(
 
             Spacer(modifier = Modifier.weight(1f))
             // 아이디 찾기, 비밀번호, 회원가입 컴포넌트
-            AuthManagement(
-                navController = navController,
-                loginState = loginState,
-                snackbarHostState = snackbarHostState,
-                context = context
-            )
+            AuthManagement(navController = navController,)
             Spacer(modifier = Modifier.weight(1f))
             // 또는 다른 서비스 계정 컴포넌트
-            AnotherServiceLogIn()
+            SocialServiceLogIn()
             Spacer(modifier = Modifier.weight(7f))
         }
     }

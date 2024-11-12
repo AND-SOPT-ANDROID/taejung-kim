@@ -27,26 +27,7 @@ import org.sopt.and.presentation.signup.UserViewModel
 @Composable
 fun AuthManagement(
     navController: NavController,
-    loginState: State<UserViewModel.LogInState?>,
-    snackbarHostState: SnackbarHostState,
-    context: Context
 ) {
-    LaunchedEffect(loginState.value) {
-        when (loginState.value) {
-            UserViewModel.LogInState.Success -> {
-                navController.navigate("mainScreen") {
-                    popUpTo("login") { inclusive = true }
-                }
-            }
-            UserViewModel.LogInState.Error -> {
-                snackbarHostState.showSnackbar(
-                    message = context.getString(R.string.log_in_error),
-                    actionLabel = context.getString(R.string.log_in_ok)
-                )
-            }
-            else -> Unit
-        }
-    }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,

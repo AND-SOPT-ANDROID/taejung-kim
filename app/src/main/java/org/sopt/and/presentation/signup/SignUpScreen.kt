@@ -53,21 +53,25 @@ fun SignUpScreen(
     // password text remeber를 통한 변수 변경
     var textPasswd by remember { mutableStateOf("") }
     val lifecycleOwner = LocalLifecycleOwner.current
-    val signUpSate by viewModel.signUpState.collectAsStateWithLifecycle(lifecycleOwner)
+    val authState by viewModel.authState.collectAsStateWithLifecycle(lifecycleOwner)
     val context = LocalContext.current
     // 모든 textFiled가 채워졌는지 판단하는 변수
     val allFieldFilled = idState.value.text.isNotEmpty() && passwordState.value.text.isNotEmpty()
 
 
-    LaunchedEffect(signUpSate) {
-        when (signUpSate) {
-            is UserViewModel.SignUpState.Success -> {
-                navController.navigate("login")
+    LaunchedEffect(authState) {
+        when (authState) {
+            is AuthState.Success -> {
+                if ((authState as AuthState.Success).type == AuthType.SIGNUP) {
+                    navController.navigate("login") {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
             }
-            is UserViewModel.SignUpState.Error -> {
-                // 캐스트
-                context.showToast((signUpSate as UserViewModel.SignUpState.Error).messageResId)
+            is AuthState.Error -> {
+                context.showToast((authState as AuthState.Error).messageResId)
             }
+            else -> Unit
         }
     }
 
