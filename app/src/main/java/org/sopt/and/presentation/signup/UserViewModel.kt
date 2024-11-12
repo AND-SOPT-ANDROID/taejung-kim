@@ -1,38 +1,41 @@
 package org.sopt.and.presentation.signup
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.sopt.and.R
 import org.sopt.and.domain.SharedPreferenceManager
 
+interface AuthState {
+    class Success(val type: AuthType) : AuthState
+    class Error(val messageResId: Int, val type: AuthType) : AuthState
+}
+
+enum class AuthType {
+    LOGIN, SIGNUP
+}
+
 class UserViewModel : ViewModel() {
-    private var userId = ""
-    private var userPassword = ""
+    private var userData = UserData()
 
     // 로그인 상태를 관리하기 위한 LiveData
-    private val _loginState = MutableSharedFlow<LogInSate>()
-    val loginState = _loginState.asSharedFlow()
-
-    private val _signUpState = MutableSharedFlow<SignUpState>()
-    val signUpState = _signUpState.asSharedFlow()
+    private val _authState = MutableStateFlow<AuthState?>(null)  // 초기 상태로 null 설정
+    val authState: StateFlow<AuthState?> = _authState.asStateFlow()
 
     // 회원가입 로직
     fun signUp(id: String, password: String) {
         viewModelScope.launch {
             when (checkSignUpValue(id, password)) {
-                "idError" -> _signUpState.emit(SignUpState.Error(R.string.sign_up_error))
-                "passwdError" -> _signUpState.emit(SignUpState.Error(R.string.sign_up_paswd))
+                "idError" -> _authState.value = AuthState.Error(R.string.sign_up_error, AuthType.SIGNUP)
+                "passwdError" -> _authState.value = AuthState.Error(R.string.sign_up_paswd, AuthType.SIGNUP)
                 else -> {
-                    userId = id
-                    userPassword = password
-                    _signUpState.emit(SignUpState.Success)
+                    userData = UserData(id, password)
+                    _authState.value = AuthState.Success(AuthType.SIGNUP)
                 }
             }
         }
@@ -41,25 +44,12 @@ class UserViewModel : ViewModel() {
     // 로그인 로직
     fun logIn(id: String, password: String) {
         viewModelScope.launch {
-            Log.d("id", id)
-            Log.d("userId", userId)
-            Log.d("password", password)
-            Log.d("userPassword", userPassword)
-            if (id == userId && password == userPassword) {
-                _loginState.emit(LogInSate.Success)
+            if (id == userData.userId && password == userData.userPassword) {
+                _authState.value = AuthState.Success(AuthType.LOGIN)
+                SharedPreferenceManager.saveUserId(userData.userId)
             } else {
-                _loginState.emit(LogInSate.Error)
+                _authState.value = AuthState.Error(R.string.log_in_error, AuthType.LOGIN)
             }
         }
-    }
-
-    sealed class SignUpState {
-        object Success : SignUpState()
-        data class Error(val messageResId: Int) : SignUpState()
-    }
-
-    sealed class LogInSate {
-        object Success : LogInSate()
-        object Error : LogInSate()
     }
 }

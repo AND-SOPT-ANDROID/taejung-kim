@@ -1,22 +1,17 @@
 package org.sopt.and.presentation.signup
 
-import android.app.Activity
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,20 +25,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import org.sopt.and.R
-import org.sopt.and.presentation.signup.Component.IdTextField
-import org.sopt.and.presentation.signup.Component.PasswordField
+import org.sopt.and.presentation.signup.components.IdTextField
+import org.sopt.and.presentation.signup.components.PasswordField
+import org.sopt.and.presentation.signup.components.SignUpInfoRow
+import org.sopt.and.presentation.signup.components.SignUpTitle
+import org.sopt.and.presentation.signup.components.SocialServiceLogIn
+import org.sopt.and.util.showToast
 
 @Composable
 fun SignUpScreen(
@@ -58,20 +53,25 @@ fun SignUpScreen(
     // password text remeber를 통한 변수 변경
     var textPasswd by remember { mutableStateOf("") }
     val lifecycleOwner = LocalLifecycleOwner.current
-    val signUpSate by viewModel.signUpState.collectAsStateWithLifecycle(lifecycleOwner)
+    val authState by viewModel.authState.collectAsStateWithLifecycle(lifecycleOwner)
     val context = LocalContext.current
     // 모든 textFiled가 채워졌는지 판단하는 변수
     val allFieldFilled = idState.value.text.isNotEmpty() && passwordState.value.text.isNotEmpty()
 
 
-    LaunchedEffect(signUpSate) {
-        when (signUpSate) {
-            is UserViewModel.SignUpState.Success -> {
-                navController.navigate("login")
+    LaunchedEffect(authState) {
+        when (authState) {
+            is AuthState.Success -> {
+                if ((authState as AuthState.Success).type == AuthType.SIGNUP) {
+                    navController.navigate("login") {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
             }
-            is UserViewModel.SignUpState.Error -> {
-                Toast.makeText(context, context.getString((signUpSate as UserViewModel.SignUpState.Error).messageResId), Toast.LENGTH_SHORT).show()
+            is AuthState.Error -> {
+                context.showToast((authState as AuthState.Error).messageResId)
             }
+            else -> Unit
         }
     }
 
@@ -104,32 +104,19 @@ fun SignUpScreen(
             }
 
             Spacer(modifier = Modifier.weight(3f))
-            Row {
-                Text(
-                    text = "이메일과 비밀번호",
-                    fontSize = 20.sp,
-                    color = Color.White
-                )
-                Text(
-                    text = "만으로",
-                    fontSize = 20.sp,
-                    color = Color.Gray
-                )
-            }
+            SignUpTitle(
+                firstText = stringResource(R.string.sign_up_title_top_start),
+                firstColor = Color.White,
+                secondText = stringResource(R.string.sign_up_title_top_end),
+                secondColor = Color.Gray
+            )
 
-            Row {
-                Text(
-                    text = "Wavve를 즐길 수 ",
-                    fontSize = 20.sp,
-                    color = Color.White
-                )
-                Text(
-                    text = "있어요!",
-                    fontSize = 20.sp,
-                    color = Color.Gray
-                )
-            }
-
+            SignUpTitle(
+                firstText = stringResource(R.string.sign_up_title_bottom_start),
+                firstColor = Color.White,
+                secondText = stringResource(R.string.sign_up_title_bottom_end),
+                secondColor = Color.Gray
+            )
             Spacer(modifier = Modifier.weight(2f))
             IdTextField(
                 valueState = idState,
@@ -137,21 +124,10 @@ fun SignUpScreen(
             )
 
             Spacer(modifier = Modifier.weight(0.5f))
-            Row {
-                Image(
-                    painter = painterResource(R.drawable.ic_info),
-                    contentDescription = "info",
-                    modifier = Modifier
-                        .size(24.dp)
-                        .padding(end = 4.dp)
-                )
-                Text(
-                    text = stringResource(R.string.sign_up_id),
-                    modifier = Modifier.weight(1f),
-                    color = Color.Gray,
-                    fontSize = 12.sp,
-                )
-            }
+            SignUpInfoRow(
+                iconResId = R.drawable.ic_info,
+                text = stringResource(R.string.sign_up_id)
+            )
 
             Spacer(modifier = Modifier.weight(1f))
             PasswordField(
@@ -160,102 +136,14 @@ fun SignUpScreen(
             )
 
             Spacer(modifier = Modifier.weight(0.5f))
-            Row {
-                Image(
-                    painter = painterResource(R.drawable.ic_info),
-                    contentDescription = "info",
-                    modifier = Modifier
-                        .size(24.dp)
-                        .padding(end = 4.dp)
-                )
-                Text(
-                    text = stringResource(R.string.sign_up_passwd),
-                    modifier = Modifier.weight(1f),
-                    color = Color.Gray,
-                    fontSize = 12.sp
-                )
-            }
+            SignUpInfoRow(
+                iconResId = R.drawable.ic_info,
+                text = stringResource(R.string.sign_up_passwd)
+            )
 
             Spacer(modifier = Modifier.weight(2f))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                // 실선을 위해 좌우 Spacer 배치
-                Spacer(
-                    modifier = Modifier
-                        .height(1.dp)
-                        .background(Color.Gray)
-                        .weight(1f)
-                )
-                Text(
-                    "또는 다른 서비스 계정으로 가입",
-                    fontSize = 12.sp,
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    color = Color.Gray
-                )
-                Spacer(
-                    modifier = Modifier
-                        .height(1.dp)
-                        .background(Color.Gray)
-                        .weight(1f)
-                )
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Spacer(modifier = Modifier.weight(4f))
-                Image(
-                    modifier = Modifier.size(48.dp),
-                    painter = painterResource(R.drawable.ic_kakao),
-                    contentDescription = "카카오 로고"
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Image(
-                    modifier = Modifier.size(48.dp),
-                    painter = painterResource(R.drawable.ic_face_book),
-                    contentDescription = "페이스북 로고"
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Image(
-                    modifier = Modifier.size(48.dp),
-                    painter = painterResource(R.drawable.ic_github),
-                    contentDescription = "깃허브 로고"
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Image(
-                    modifier = Modifier.size(48.dp),
-                    painter = painterResource(R.drawable.ic_discord),
-                    contentDescription = "디스코드 로고"
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Image(
-                    modifier = Modifier.size(48.dp),
-                    painter = painterResource(R.drawable.ic_kakao),
-                    contentDescription = "카카오 로고"
-                )
-                Spacer(modifier = Modifier.weight(4f))
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-            Row {
-                Text(
-                    modifier = Modifier.padding(end = 4.dp),
-                    text = "-",
-                    color = Color.Gray,
-                    fontSize = 12.sp
-                )
-                Text(
-                    text = stringResource(R.string.sns_pooq_wavve),
-                    modifier = Modifier.weight(1f),
-                    color = Color.Gray,
-                    fontSize = 12.sp
-                )
-            }
-            Spacer(modifier = Modifier.weight(4f))
+            SocialServiceLogIn()
+            Spacer(modifier = Modifier.weight(8f))
         }
 
         Text(

@@ -25,7 +25,6 @@ import org.sopt.and.presentation.search.SearchScreen
 
 @Composable
 fun MainScreen(navController: NavController) {
-    val viewModel: MainViewModel = viewModel()
     val mainNavController = rememberNavController()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -36,7 +35,7 @@ fun MainScreen(navController: NavController) {
             startDestination = Screen.Home.route
         ) {
             composable(Screen.Home.route) {
-                HomeScreen(viewModel, innerPadding)
+                HomeScreen(innerPadding)
             }
             composable(Screen.Search.route) {
                 SearchScreen(innerPadding)

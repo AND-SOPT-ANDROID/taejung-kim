@@ -1,4 +1,4 @@
-package org.sopt.and.presentation.main
+package org.sopt.and.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.sopt.and.presentation.login.LogInScreen
+import org.sopt.and.presentation.main.MainScreen
 import org.sopt.and.presentation.navigation.Screen
 import org.sopt.and.presentation.signup.SignUpScreen
 import org.sopt.and.presentation.signup.UserViewModel

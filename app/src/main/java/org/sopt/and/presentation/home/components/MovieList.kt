@@ -1,4 +1,4 @@
-package org.sopt.and.presentation.home.Component
+package org.sopt.and.presentation.home.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
@@ -25,11 +25,10 @@ fun MovieList(title:String, movieData: List<MovieData>){
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items(movieData.size){ index ->
-            if(title == stringResource(R.string.home_trust_editor))
-                MovieEditorItem(movieData[index])
-            else
+            if(title == stringResource(R.string.home_top_20))
                 MovieTopItem(movieData[index])
-
+            else
+                MovieEditorItem(movieData[index])
         }
     }
 }

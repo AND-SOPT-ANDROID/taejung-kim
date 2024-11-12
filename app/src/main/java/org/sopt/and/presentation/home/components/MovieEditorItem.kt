@@ -1,4 +1,4 @@
-package org.sopt.and.presentation.home.Component
+package org.sopt.and.presentation.home.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.aspectRatio

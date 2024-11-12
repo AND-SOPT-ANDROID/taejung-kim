@@ -4,6 +4,12 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
+kotlin {
+    sourceSets.all {
+        languageSettings.enableLanguageFeature("ExplicitBackingFields")
+    }
+}
+
 android {
     namespace = "org.sopt.and"
     compileSdk = 34

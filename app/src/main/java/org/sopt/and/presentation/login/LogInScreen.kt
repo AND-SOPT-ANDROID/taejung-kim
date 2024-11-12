@@ -1,41 +1,29 @@
 package org.sopt.and.presentation.login
 
 import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,22 +31,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import org.sopt.and.R
-import org.sopt.and.presentation.main.MainActivity
-import org.sopt.and.presentation.signup.Component.IdTextField
-import org.sopt.and.presentation.signup.Component.PasswordField
+import org.sopt.and.presentation.login.components.AuthManagement
+import org.sopt.and.presentation.signup.AuthState
+import org.sopt.and.presentation.signup.AuthType
+import org.sopt.and.presentation.signup.components.IdTextField
+import org.sopt.and.presentation.signup.components.PasswordField
 import org.sopt.and.presentation.signup.UserViewModel
+import org.sopt.and.presentation.signup.components.SocialServiceLogIn
 
 @Composable
 fun LogInScreen(
@@ -69,9 +56,30 @@ fun LogInScreen(
     // textStyle 변경을 위한 textFieldValue 추적
     val idState = remember { mutableStateOf(TextFieldValue()) }
     val passwordState = remember { mutableStateOf(TextFieldValue()) }
-    val loginState = viewModel.loginState.collectAsState(initial = null)
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val authState by viewModel.authState.collectAsStateWithLifecycle(lifecycleOwner)
     val context = LocalContext.current as Activity
     val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(authState) {
+        when (authState) {
+            is AuthState.Success -> {
+                if ((authState as AuthState.Success).type == AuthType.LOGIN) {
+                    navController.popBackStack("login", inclusive = true)
+                    navController.navigate("mainScreen")
+                }
+            }
+            is AuthState.Error -> {
+                if ((authState as AuthState.Error).type == AuthType.LOGIN) {
+                    snackbarHostState.showSnackbar(
+                        message = context.getString((authState as AuthState.Error).messageResId),
+                        actionLabel = context.getString(R.string.log_in_ok)
+                    )
+                }
+            }
+            else -> Unit
+        }
+    }
 
     // SnackBar 구현을 위해 Scaffold 안에 정의
     Scaffold(
@@ -146,151 +154,13 @@ fun LogInScreen(
                 Text(text = stringResource(R.string.log_in_execute))
             }
 
-            // viewModel의 loginResult을 옵저빙하여 로그인 이동
-            LaunchedEffect(loginState.value) {
-                when (loginState.value) {
-                    UserViewModel.LogInSate.Success -> {
-                        navController.navigate("mainScreen") {
-                            popUpTo("login") { inclusive = true }
-                        }
-                    }
-                    UserViewModel.LogInSate.Error -> {
-                        snackbarHostState.showSnackbar(
-                            message = context.getString(R.string.log_in_error),
-                            actionLabel = context.getString(R.string.log_in_ok)
-                        )
-                    }
-                    else -> Unit
-                }
-            }
-
             Spacer(modifier = Modifier.weight(1f))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(
-                    stringResource(R.string.log_in_find_id),
-                    fontSize = 12.sp,
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    color = Color.Gray
-                )
-
-                VerticalDivider(
-                    color = Color.Gray,
-                    modifier = Modifier
-                        .height(12.dp)
-                        .width(1.dp)
-                )
-
-                Text(
-                    text = stringResource(R.string.log_in_passwd_change),
-                    fontSize = 12.sp,
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    color = Color.Gray
-                )
-
-                VerticalDivider(
-                    color = Color.Gray,
-                    modifier = Modifier
-                        .height(12.dp)
-                        .width(1.dp)
-                )
-
-                Text(
-                    text = stringResource(R.string.log_in_sign_up),
-                    fontSize = 12.sp,
-                    modifier = Modifier
-                        .padding(horizontal = 8.dp)
-                        .clickable(
-                            enabled = true,
-                            onClick = {navController.navigate("signup")}
-                        ),
-                    color = Color.Gray,
-                )
-            }
-
-            Spacer(modifier = Modifier.weight(1.5f))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                // 실선을 위해 좌우 Spacer 배치
-                Spacer(
-                    modifier = Modifier
-                        .height(1.dp)
-                        .background(Color.Gray)
-                        .weight(1f)
-                )
-                Text(
-                    "또는 다른 서비스 계정으로 가입",
-                    fontSize = 12.sp,
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    color = Color.Gray
-                )
-                Spacer(
-                    modifier = Modifier
-                        .height(1.dp)
-                        .background(Color.Gray)
-                        .weight(1f)
-                )
-            }
-
+            // 아이디 찾기, 비밀번호, 회원가입 컴포넌트
+            AuthManagement(navController = navController,)
             Spacer(modifier = Modifier.weight(1f))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Spacer(modifier = Modifier.weight(4f))
-                Image(
-                    modifier = Modifier.size(48.dp),
-                    painter = painterResource(R.drawable.ic_kakao),
-                    contentDescription = "카카오 로고"
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Image(
-                    modifier = Modifier.size(48.dp),
-                    painter = painterResource(R.drawable.ic_face_book),
-                    contentDescription = "페이스북 로고"
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Image(
-                    modifier = Modifier.size(48.dp),
-                    painter = painterResource(R.drawable.ic_github),
-                    contentDescription = "깃허브 로고"
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Image(
-                    modifier = Modifier.size(48.dp),
-                    painter = painterResource(R.drawable.ic_discord),
-                    contentDescription = "디스코드 로고"
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Image(
-                    modifier = Modifier.size(48.dp),
-                    painter = painterResource(R.drawable.ic_kakao),
-                    contentDescription = "카카오 로고"
-                )
-                Spacer(modifier = Modifier.weight(4f))
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-            Row {
-                Text(
-                    modifier = Modifier.padding(end = 4.dp),
-                    text = "-",
-                    color = Color.Gray,
-                    fontSize = 12.sp
-                )
-                Text(
-                    text = stringResource(R.string.sns_pooq_wavve),
-                    modifier = Modifier.weight(1f),
-                    color = Color.Gray,
-                    fontSize = 12.sp
-                )
-            }
-            Spacer(modifier = Modifier.weight(4f))
+            // 또는 다른 서비스 계정 컴포넌트
+            SocialServiceLogIn()
+            Spacer(modifier = Modifier.weight(7f))
         }
     }
 

@@ -1,4 +1,4 @@
-package org.sopt.and.presentation.signup.Component
+package org.sopt.and.presentation.signup.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions

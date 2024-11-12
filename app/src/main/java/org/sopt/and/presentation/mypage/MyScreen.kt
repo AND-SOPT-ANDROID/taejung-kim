@@ -21,18 +21,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import org.sopt.and.presentation.main.MainViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import org.sopt.and.R
 import org.sopt.and.domain.SharedPreferenceManager
+import org.sopt.and.presentation.mypage.components.MyMovieInfo
+import org.sopt.and.presentation.mypage.components.MyPurchaseInfo
 import org.sopt.and.ui.theme.Gray2
 import org.sopt.and.ui.theme.Typography
 
 @Composable
 fun MyScreen(paddingValues: PaddingValues) {
-
-    // ViewModel에서 LiveData를 관찰
-    // runtime-livedata 라이브러리를 이용
-    val userId = SharedPreferenceManager.getUserId()
+    val viewModel: MyViewModel = viewModel()
 
     Column(
         modifier = Modifier
@@ -55,7 +54,7 @@ fun MyScreen(paddingValues: PaddingValues) {
             )
             Spacer(modifier = Modifier.size(8.dp))
             Text(
-                text = "$userId",
+                text = "${SharedPreferenceManager.getUserId()}",
                 style = Typography.titleSmall,
                 color = Color.White,
             )
@@ -78,100 +77,35 @@ fun MyScreen(paddingValues: PaddingValues) {
             }
         }
 
-        Text(
-            text = stringResource(R.string.my_first),
-            color = Color.Gray,
-            style = Typography.titleSmall,
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Gray2)
-                .padding(16.dp, top = 8.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Gray2)
-                .padding(start = 16.dp, bottom = 16.dp)
-        ) {
-            Text(
-                stringResource(R.string.my_purchase),
-                style = Typography.titleSmall,
-                color = Color.White)
-            Image(
-                painter = painterResource(R.drawable.ic_after),
-                contentDescription = "구매하기 버튼")
-        }
+        MyPurchaseInfo(
+            headerTextResId = R.string.my_no_purchase,
+            buttonTextResId = R.string.my_first,
+            iconResId = R.drawable.ic_after,
+            contentResId = R.string.my_no_purchase
+        )
 
         Spacer(modifier = Modifier
             .fillMaxWidth()
             .height(1.dp))
 
-        Text(
-            text = stringResource(R.string.my_no_purchase),
-            color = Color.Gray,
-            style = Typography.titleSmall,
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Gray2)
-                .padding(start = 16.dp, top = 8.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Gray2)
-                .padding(start = 16.dp, bottom = 16.dp)
-        ) {
-            Text(text = stringResource(R.string.my_purchase),
-                style = Typography.titleSmall,
-                color = Color.White)
-            Image(
-                painter = painterResource(R.drawable.ic_after),
-                contentDescription = "구매하기 버튼")
-        }
+        MyPurchaseInfo(
+            headerTextResId = R.string.my_no_purchase,
+            buttonTextResId = R.string.my_purchase,
+            iconResId = R.drawable.ic_after,
+            contentResId = R.string.my_no_purchase
+        )
+        MyMovieInfo(
+            viewModel = MyViewModel(),
+            titleResId = R.string.my_watching,
+            imageResId = R.drawable.ic_warning,
+            noContentResId = R.string.my_no_watching
+        )
 
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
-            Text(
-                text = stringResource(R.string.my_watching),
-                color = Color.White,
-                style = Typography.headlineMedium,
-                modifier = Modifier.padding(16.dp)
-            )
-            Image(
-                painter = painterResource(R.drawable.ic_warning),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .size(80.dp),
-                alignment = Alignment.Center,
-                contentDescription = "시청 내역 없음"
-            )
-            Text(text = stringResource(R.string.my_no_watching),
-                color = Color.Gray,
-                style = Typography.titleSmall,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center)
-        }
-
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
-            Text(
-                text = stringResource(R.string.my_wish),
-                color = Color.White,
-                style = Typography.headlineMedium,
-                modifier = Modifier.padding(16.dp)
-            )
-            Image(
-                painter = painterResource(R.drawable.ic_warning),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .size(80.dp),
-                contentDescription = "시청 내역 없음"
-            )
-            Text(text = stringResource(R.string.my_no_wish),
-                color = Color.Gray,
-                style = Typography.titleSmall,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center)
-        }
+        MyMovieInfo(
+            viewModel = MyViewModel(),
+            titleResId = R.string.my_wish,
+            imageResId = R.drawable.ic_warning,
+            noContentResId = R.string.my_no_wish
+        )
     }
 }
