@@ -22,16 +22,16 @@ import androidx.compose.ui.unit.sp
 import org.sopt.and.R
 
 @Composable
-fun AnotherServiceLogIn() {
-    AnotherTopLine()
+fun SocialServiceLogIn() {
+    SocialTopLine()
     Spacer(modifier = Modifier.padding(10.dp))
     SocialIconLine()
     Spacer(modifier = Modifier.padding(10.dp))
-    AnotherBottomLine()
+    SocialBottomLine()
 }
 
 @Composable
-fun AnotherTopLine(){
+fun SocialTopLine(){
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
@@ -94,7 +94,7 @@ fun SocialIcon(
 }
 
 @Composable
-fun AnotherBottomLine(){
+fun SocialBottomLine(){
     Row {
         Text(
             modifier = Modifier.padding(end = 4.dp),

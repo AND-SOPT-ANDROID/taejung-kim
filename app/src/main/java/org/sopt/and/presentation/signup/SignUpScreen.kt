@@ -33,11 +33,11 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import org.sopt.and.R
-import org.sopt.and.presentation.signup.components.AnotherServiceLogIn
 import org.sopt.and.presentation.signup.components.IdTextField
 import org.sopt.and.presentation.signup.components.PasswordField
 import org.sopt.and.presentation.signup.components.SignUpInfoRow
 import org.sopt.and.presentation.signup.components.SignUpTitle
+import org.sopt.and.presentation.signup.components.SocialServiceLogIn
 import org.sopt.and.util.showToast
 
 @Composable
@@ -138,7 +138,7 @@ fun SignUpScreen(
             )
 
             Spacer(modifier = Modifier.weight(2f))
-            AnotherServiceLogIn()
+            SocialServiceLogIn()
             Spacer(modifier = Modifier.weight(8f))
         }
 
