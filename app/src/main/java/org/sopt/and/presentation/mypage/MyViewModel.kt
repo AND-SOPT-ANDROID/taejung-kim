@@ -7,8 +7,7 @@ import org.sopt.and.R
 import org.sopt.and.presentation.home.MovieData
 
 class MyViewModel: ViewModel() {
-    private val _myWatching = MutableStateFlow<List<MovieData>>(emptyList())
-    val myWatching: StateFlow<List<MovieData>> = _myWatching
+    val myWatching: StateFlow<List<MovieData>> field = MutableStateFlow(emptyList())
 
     private val _myInterest = MutableStateFlow<List<MovieData>>(emptyList())
     val myInterest: StateFlow<List<MovieData>> = _myInterest
@@ -18,7 +17,7 @@ class MyViewModel: ViewModel() {
     }
 
     private fun loadMovies() {
-        _myWatching.value = listOf(
+        myWatching.value = listOf(
             MovieData("1", R.drawable.movie1),
             MovieData("2", R.drawable.movie2),
             MovieData("3", R.drawable.movie3),
