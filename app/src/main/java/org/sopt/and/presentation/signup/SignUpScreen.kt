@@ -136,17 +136,17 @@ fun SignUpScreen(
                 modifier = Modifier.padding(top = 8.dp)
             )
 
+            Spacer(modifier = Modifier.weight(0.5f))
+            SignUpInfoRow(
+                iconResId = R.drawable.ic_info,
+                text = stringResource(R.string.sign_up_passwd)
+            )
+
             Spacer(modifier = Modifier.weight(1f))
             IdHobbyTextField(
                 valueState = hobbyState,
                 holderText = R.string.sign_up_hobby,
                 modifier = Modifier.padding(bottom = 8.dp)
-            )
-
-            Spacer(modifier = Modifier.weight(0.5f))
-            SignUpInfoRow(
-                iconResId = R.drawable.ic_info,
-                text = stringResource(R.string.sign_up_passwd)
             )
 
             Spacer(modifier = Modifier.weight(2f))

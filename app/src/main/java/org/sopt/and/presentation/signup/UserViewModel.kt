@@ -5,10 +5,8 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.sopt.and.R
@@ -17,13 +15,10 @@ import org.sopt.and.data.dto.RequestUserLoginDto
 import org.sopt.and.data.dto.RequestUserRegisterDto
 import org.sopt.and.data.dto.ResponseUserLoginDto
 import org.sopt.and.data.dto.ResponseUserRegisterDto
-import org.sopt.and.domain.SharedPreferenceManager
 import org.sopt.and.domain.SharedPreferenceManager.saveToken
-import org.sopt.and.domain.SharedPreferenceManager.saveUserName
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import kotlin.math.log
 
 interface AuthState {
     class Success(val type: AuthType) : AuthState
@@ -41,14 +36,10 @@ class UserViewModel : ViewModel() {
     private val _authState = MutableStateFlow<AuthState?>(null)  // 초기 상태로 null 설정
     val authState: StateFlow<AuthState?> = _authState.asStateFlow()
 
-    // 유저 정보를 관리
-    private val _userState = mutableStateOf<ResponseUserLoginDto?>(null)
-    val userState: State<ResponseUserLoginDto?> get() = _userState
-
-
     // 회원가입 로직
     fun signUp(username: String, password: String, hobby: String) {
         viewModelScope.launch {
+            // 호출 전 8자리 검증 진행
             when (checkSignUpValue(username, password, hobby)) {
                 "idError" -> _authState.value = AuthState.Error(R.string.sign_up_error, AuthType.SIGNUP)
                 "passwdError" -> _authState.value = AuthState.Error(R.string.sign_up_paswd, AuthType.SIGNUP)
@@ -67,8 +58,7 @@ class UserViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     _authState.value = AuthState.Success(AuthType.SIGNUP)
                 } else {
-                    val error = response.message()
-                    Log.e("error", error.toString())
+                    _authState.value = AuthState.Error(R.string.sign_up_duplicate_name, AuthType.SIGNUP)
                 }
             }
 
@@ -87,18 +77,13 @@ class UserViewModel : ViewModel() {
                 override fun onResponse(call: Call<ResponseUserLoginDto>, response: Response<ResponseUserLoginDto>) {
                     if(response.isSuccessful) {
                         val loginResponse = response.body()
-                        _userState.value = loginResponse
                         loginResponse?.result?.token?.let {
-                            // SharedPreference에 토큰 및 유저네임 저장
+                            // SharedPreference에 토큰 저장
                             saveToken(it)
-                            saveUserName(username)
                         }
-
-                        Log.d("token?", _userState.value.toString())
                         _authState.value = AuthState.Success(AuthType.LOGIN)
                     } else {
-                        val error = response.message()
-                        Log.e("error", error.toString())
+                        _authState.value = AuthState.Error(R.string.log_in_error, AuthType.LOGIN)
                     }
                 }
 
