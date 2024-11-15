@@ -171,7 +171,7 @@ fun SignUpScreen(
                         textPasswd = passwordState.value.text
                         textHobby = hobbyState.value.text
                         // viewModel의 signUp을 통해 success boolean 판단
-                        viewModel.signUp(textId, textPasswd)
+                        viewModel.signUp(textId, textPasswd, textHobby)
                     }
                 ),
             textAlign = TextAlign.Center

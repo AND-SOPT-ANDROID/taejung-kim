@@ -42,9 +42,9 @@ import org.sopt.and.R
 import org.sopt.and.presentation.login.components.AuthManagement
 import org.sopt.and.presentation.signup.AuthState
 import org.sopt.and.presentation.signup.AuthType
-import org.sopt.and.presentation.signup.components.IdTextField
 import org.sopt.and.presentation.signup.components.PasswordField
 import org.sopt.and.presentation.signup.UserViewModel
+import org.sopt.and.presentation.signup.components.IdHobbyTextField
 import org.sopt.and.presentation.signup.components.SocialServiceLogIn
 
 @Composable
@@ -117,8 +117,9 @@ fun LogInScreen(
 
             Spacer(modifier = Modifier.weight(2f))
             // 윤곽선의 색상 및 두께를 커스텀 가능한 OutLinedTextField
-            IdTextField(
+            IdHobbyTextField(
                 valueState = idState,
+                holderText = R.string.log_in_id,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
