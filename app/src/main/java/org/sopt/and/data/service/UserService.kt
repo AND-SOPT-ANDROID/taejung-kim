@@ -8,7 +8,7 @@ import retrofit2.http.POST
 
 interface UserService {
     @POST("/user")
-    fun getSingleUser(
+    fun postUserRegister(
         @Body request: RequestUserRegisterDto
     ): Call<ResponseUserRegisterDto>
 }

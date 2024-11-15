@@ -9,8 +9,8 @@ data class RequestUserRegisterDto(
     val id: String,
     @SerialName("password")
     val password: String,
-    @SerialName("hobby")
-    val hobby: String
+//    @SerialName("hobby")
+//    val hobby: String
 )
 
 @Serializable
