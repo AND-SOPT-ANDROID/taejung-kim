@@ -35,7 +35,6 @@ enum class AuthType {
 }
 
 class UserViewModel : ViewModel() {
-    private var userData = UserData()
     private val userService by lazy { ServicePool.userService }
 
     // 로그인 상태를 관리하기 위한 LiveData
@@ -56,7 +55,6 @@ class UserViewModel : ViewModel() {
                 "hobbyError" -> _authState.value = AuthState.Error(R.string.sign_up_error_hobby, AuthType.SIGNUP)
                 else -> {
                     postUserRegister(RequestUserRegisterDto(username, password, hobby))
-                    userData = UserData(username, password, hobby)
                 }
             }
         }
