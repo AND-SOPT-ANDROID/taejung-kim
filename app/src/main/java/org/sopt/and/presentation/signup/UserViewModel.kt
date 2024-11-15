@@ -19,6 +19,7 @@ import org.sopt.and.data.dto.ResponseUserLoginDto
 import org.sopt.and.data.dto.ResponseUserRegisterDto
 import org.sopt.and.domain.SharedPreferenceManager
 import org.sopt.and.domain.SharedPreferenceManager.saveToken
+import org.sopt.and.domain.SharedPreferenceManager.saveUserName
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -81,17 +82,18 @@ class UserViewModel : ViewModel() {
     }
 
     // 로그인 로직
-    fun logIn(id: String, password: String) {
+    fun logIn(username: String, password: String) {
         viewModelScope.launch {
-            userService.postUserLogin(RequestUserLoginDto(id, password)).enqueue(object :
+            userService.postUserLogin(RequestUserLoginDto(username, password)).enqueue(object :
                 Callback<ResponseUserLoginDto>{
                 override fun onResponse(call: Call<ResponseUserLoginDto>, response: Response<ResponseUserLoginDto>) {
                     if(response.isSuccessful) {
                         val loginResponse = response.body()
                         _userState.value = loginResponse
                         loginResponse?.result?.token?.let {
-                            // SharedPreference에 토큰 저장
+                            // SharedPreference에 토큰 및 유저네임 저장
                             saveToken(it)
+                            saveUserName(username)
                         }
 
                         Log.d("token?", _userState.value.toString())

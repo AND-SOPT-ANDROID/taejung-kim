@@ -11,11 +11,15 @@ object SharedPreferenceManager {
         preferences.edit().putString("token", token).apply()
     }
 
-    fun saveId(userId: String) {
-        preferences.edit().putString("userId", userId).apply()
+    fun saveUserName(userName: String) {
+        preferences.edit().putString("userName", userName).apply()
     }
 
     fun getAccessToken(): String? {
         return preferences.getString("token", null)
+    }
+
+    fun getUserName(): String? {
+        return preferences.getString("userName", null)
     }
 }

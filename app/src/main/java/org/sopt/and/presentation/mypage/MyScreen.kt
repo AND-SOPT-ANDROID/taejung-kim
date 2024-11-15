@@ -54,7 +54,7 @@ fun MyScreen(paddingValues: PaddingValues) {
             )
             Spacer(modifier = Modifier.size(8.dp))
             Text(
-                text = "${SharedPreferenceManager.getAccessToken()}",
+                text = "${SharedPreferenceManager.getUserName()}",
                 style = Typography.titleSmall,
                 color = Color.White,
             )
