@@ -14,7 +14,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import org.sopt.and.R
 
 @Composable
-fun IdTextField(
+fun IdHobbyTextField(
     valueState: MutableState<TextFieldValue>,
     modifier: Modifier = Modifier,
     isSingleLine: Boolean = true,
