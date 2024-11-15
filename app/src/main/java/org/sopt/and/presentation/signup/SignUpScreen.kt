@@ -120,6 +120,7 @@ fun SignUpScreen(
             Spacer(modifier = Modifier.weight(2f))
             IdHobbyTextField(
                 valueState = idState,
+                holderText = R.string.log_in_id,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
@@ -138,6 +139,7 @@ fun SignUpScreen(
             Spacer(modifier = Modifier.weight(1f))
             IdHobbyTextField(
                 valueState = hobbyState,
+                holderText = R.string.sign_up_hobby,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
