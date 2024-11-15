@@ -43,14 +43,15 @@ class UserViewModel : ViewModel() {
 
 
     // 회원가입 로직
-    fun signUp(id: String, password: String) {
+    fun signUp(username: String, password: String, hobby: String) {
         viewModelScope.launch {
-            when (checkSignUpValue(id, password)) {
+            when (checkSignUpValue(username, password, hobby)) {
                 "idError" -> _authState.value = AuthState.Error(R.string.sign_up_error, AuthType.SIGNUP)
                 "passwdError" -> _authState.value = AuthState.Error(R.string.sign_up_paswd, AuthType.SIGNUP)
+                "hobbyError" -> _authState.value = AuthState.Error(R.string.sign_up_error_hobby, AuthType.SIGNUP)
                 else -> {
-                    postUserRegister(RequestUserRegisterDto(id, password))
-                    userData = UserData(id, password)
+                    postUserRegister(RequestUserRegisterDto(username, password, hobby))
+                    userData = UserData(username, password, hobby)
                 }
             }
         }
@@ -63,7 +64,7 @@ class UserViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     _userState.value = response.body()
                     _authState.value = AuthState.Success(AuthType.SIGNUP)
-                    userData = UserData(request.id, request.password)
+                    userData = UserData(request.username, request.password, request.hobby)
 
                 } else {
                     val error = response.message()

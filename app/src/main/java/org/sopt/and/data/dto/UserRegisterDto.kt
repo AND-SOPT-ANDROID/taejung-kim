@@ -5,20 +5,20 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RequestUserRegisterDto(
-    @SerialName("id")
-    val id: String,
+    @SerialName("username")
+    val username: String,
     @SerialName("password")
     val password: String,
-//    @SerialName("hobby")
-//    val hobby: String
+    @SerialName("hobby")
+    val hobby: String
 )
 
 @Serializable
 data class ResponseUserRegisterDto(
     @SerialName("result")
-    val result: ResponseRegisterResultDto,
+    val result: ResponseRegisterResultDto? = null,
     @SerialName("code")
-    val code : Int
+    val code : String? = null
 )
 
 @Serializable
