@@ -56,7 +56,7 @@ fun SignUpScreen(
     val authState by viewModel.authState.collectAsStateWithLifecycle(lifecycleOwner)
     val context = LocalContext.current
     // 모든 textFiled가 채워졌는지 판단하는 변수
-    val allFieldFilled = idState.value.text.isNotEmpty() && passwordState.value.text.isNotEmpty()
+    val allFieldFilled = idState.value.text.isNotEmpty() && passwordState.value.text.isNotEmpty() && hobbyState.value.text.isNotEmpty()
 
 
     LaunchedEffect(authState) {
