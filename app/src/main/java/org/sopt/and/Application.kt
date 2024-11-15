@@ -6,6 +6,11 @@ import org.sopt.and.domain.SharedPreferenceManager
 class Application : Application() {
     override fun onCreate() {
         super.onCreate()
-        SharedPreferenceManager.initialize(this)
+        appContext = this
+    }
+
+    companion object {
+        lateinit var appContext: Application
+            private set
     }
 }

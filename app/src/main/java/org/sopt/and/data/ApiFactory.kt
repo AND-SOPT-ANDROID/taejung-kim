@@ -16,9 +16,11 @@ object ApiFactory {
         level = HttpLoggingInterceptor.Level.BODY
     }
 
-    private val client = OkHttpClient.Builder()
-        .addInterceptor(loggingInterceptor)
-        .build()
+    private val client =  OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .addInterceptor(TokenInterceptor())
+            .build()
+
 
     val retrofit: Retrofit by lazy {
         Retrofit.Builder()
