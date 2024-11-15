@@ -1,6 +1,7 @@
 package org.sopt.and.domain
 
 import android.content.Context
+import android.util.Log
 import org.sopt.and.Application
 
 object SharedPreferenceManager {
@@ -11,15 +12,8 @@ object SharedPreferenceManager {
         preferences.edit().putString("token", token).apply()
     }
 
-    fun saveUserName(userName: String) {
-        preferences.edit().putString("userName", userName).apply()
-    }
-
     fun getAccessToken(): String? {
+        Log.d("token", preferences.getString("token", null).toString())
         return preferences.getString("token", null)
-    }
-
-    fun getUserName(): String? {
-        return preferences.getString("userName", null)
     }
 }
