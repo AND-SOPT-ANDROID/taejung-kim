@@ -1,22 +1,17 @@
 package org.sopt.and.presentation.signup
 
-import org.sopt.and.util.RegExPattern.idPattern
-import org.sopt.and.util.RegExPattern.passwdPattern
+import org.sopt.and.util.RegExPattern
 
-// 아이디 비밀번호 검증하는 함수 생성
-fun checkSignUpValue(id: String, passwd: String): String {
-    // 앞뒤 공백 제거
-    val trimId = id.trim()
-    val trimPasswd = passwd.trim()
-
-    // 아이디 패턴과 매칭
-    if (!trimId.matches(idPattern)) {
+// 아이디 비밀번호 , 취미 검증하는 함수 생성
+fun checkSignUpValue(id: String, passwd: String, hobby: String): String {
+    if (!RegExPattern.validateMaxLength(id)) {
         return "idError"
     }
-    // 비밀번호 패턴과 매칭
-    if (!trimPasswd.matches(passwdPattern)) {
+    if (!RegExPattern.validateMaxLength(passwd)) {
         return "passwdError"
     }
-
+    if (!RegExPattern.validateMaxLength(hobby)) {
+        return "hobbyError"
+    }
     return "correct"
 }

@@ -19,11 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.sopt.and.R
-import org.sopt.and.domain.SharedPreferenceManager
 import org.sopt.and.presentation.mypage.components.MyMovieInfo
 import org.sopt.and.presentation.mypage.components.MyPurchaseInfo
 import org.sopt.and.ui.theme.Gray2
@@ -32,6 +31,8 @@ import org.sopt.and.ui.theme.Typography
 @Composable
 fun MyScreen(paddingValues: PaddingValues) {
     val viewModel: MyViewModel = viewModel()
+    viewModel.getUserHobby()
+
 
     Column(
         modifier = Modifier
@@ -54,7 +55,7 @@ fun MyScreen(paddingValues: PaddingValues) {
             )
             Spacer(modifier = Modifier.size(8.dp))
             Text(
-                text = "${SharedPreferenceManager.getUserId()}",
+                text = "${viewModel.hobbyState.value}",
                 style = Typography.titleSmall,
                 color = Color.White,
             )
@@ -95,17 +96,23 @@ fun MyScreen(paddingValues: PaddingValues) {
             contentResId = R.string.my_no_purchase
         )
         MyMovieInfo(
-            viewModel = MyViewModel(),
+            viewModel = viewModel,
             titleResId = R.string.my_watching,
             imageResId = R.drawable.ic_warning,
             noContentResId = R.string.my_no_watching
         )
 
         MyMovieInfo(
-            viewModel = MyViewModel(),
+            viewModel = viewModel,
             titleResId = R.string.my_wish,
             imageResId = R.drawable.ic_warning,
             noContentResId = R.string.my_no_wish
         )
     }
+}
+
+@Preview
+@Composable
+fun MyScreenPreview() {
+    MyScreen(paddingValues = PaddingValues(10.dp))
 }

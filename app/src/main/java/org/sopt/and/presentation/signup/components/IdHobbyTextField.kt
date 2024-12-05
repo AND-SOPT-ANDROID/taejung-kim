@@ -14,9 +14,10 @@ import androidx.compose.ui.text.input.TextFieldValue
 import org.sopt.and.R
 
 @Composable
-fun IdTextField(
+fun IdHobbyTextField(
     valueState: MutableState<TextFieldValue>,
     modifier: Modifier = Modifier,
+    holderText: Int,
     isSingleLine: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
@@ -24,7 +25,7 @@ fun IdTextField(
         value = valueState.value,
         onValueChange = { valueState.value = it },
         singleLine = isSingleLine,
-        placeholder = { Text(stringResource(R.string.log_in_id)) },
+        placeholder = { Text(stringResource(holderText)) },
         textStyle = TextStyle(color = Color.White),
         modifier = modifier.fillMaxWidth(),
         keyboardOptions = keyboardOptions

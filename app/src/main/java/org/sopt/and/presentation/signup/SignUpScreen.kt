@@ -1,12 +1,10 @@
 package org.sopt.and.presentation.signup
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,12 +26,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import org.sopt.and.R
-import org.sopt.and.presentation.signup.components.IdTextField
+import org.sopt.and.presentation.signup.components.IdHobbyTextField
 import org.sopt.and.presentation.signup.components.PasswordField
 import org.sopt.and.presentation.signup.components.SignUpInfoRow
 import org.sopt.and.presentation.signup.components.SignUpTitle
@@ -48,15 +45,18 @@ fun SignUpScreen(
     // textStyle 변경을 위한 textFieldValue 추적
     val idState = remember { mutableStateOf(TextFieldValue()) }
     val passwordState = remember { mutableStateOf(TextFieldValue()) }
+    val hobbyState = remember { mutableStateOf(TextFieldValue()) }
     // id text remeber를 통한 변수 변경
     var textId by remember { mutableStateOf("") }
     // password text remeber를 통한 변수 변경
     var textPasswd by remember { mutableStateOf("") }
+    // hobby text remember를 통한 변수 변경
+    var textHobby by remember { mutableStateOf("") }
     val lifecycleOwner = LocalLifecycleOwner.current
     val authState by viewModel.authState.collectAsStateWithLifecycle(lifecycleOwner)
     val context = LocalContext.current
     // 모든 textFiled가 채워졌는지 판단하는 변수
-    val allFieldFilled = idState.value.text.isNotEmpty() && passwordState.value.text.isNotEmpty()
+    val allFieldFilled = idState.value.text.isNotEmpty() && passwordState.value.text.isNotEmpty() && hobbyState.value.text.isNotEmpty()
 
 
     LaunchedEffect(authState) {
@@ -118,8 +118,9 @@ fun SignUpScreen(
                 secondColor = Color.Gray
             )
             Spacer(modifier = Modifier.weight(2f))
-            IdTextField(
+            IdHobbyTextField(
                 valueState = idState,
+                holderText = R.string.log_in_id,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
@@ -139,6 +140,13 @@ fun SignUpScreen(
             SignUpInfoRow(
                 iconResId = R.drawable.ic_info,
                 text = stringResource(R.string.sign_up_passwd)
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+            IdHobbyTextField(
+                valueState = hobbyState,
+                holderText = R.string.sign_up_hobby,
+                modifier = Modifier.padding(bottom = 8.dp)
             )
 
             Spacer(modifier = Modifier.weight(2f))
@@ -161,8 +169,9 @@ fun SignUpScreen(
                     onClick = {
                         textId = idState.value.text
                         textPasswd = passwordState.value.text
+                        textHobby = hobbyState.value.text
                         // viewModel의 signUp을 통해 success boolean 판단
-                        viewModel.signUp(textId, textPasswd)
+                        viewModel.signUp(textId, textPasswd, textHobby)
                     }
                 ),
             textAlign = TextAlign.Center

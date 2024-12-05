@@ -1,24 +1,19 @@
 package org.sopt.and.domain
 
 import android.content.Context
-import android.content.SharedPreferences
+import android.util.Log
+import org.sopt.and.Application
 
 object SharedPreferenceManager {
-    private lateinit var sharedPreferences: SharedPreferences
+    private const val PREF_NAME = "app_preferences"
+    private val preferences = Application.appContext.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 
-    fun initialize(context: Context) {
-        // 이미 초기화된 경우에는 초기화를 건너뛰게 설정
-        if(::sharedPreferences.isInitialized){
-            return
-        }
-        sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+    fun saveToken(token: String) {
+        preferences.edit().putString("token", token).apply()
     }
 
-    fun saveUserId(userId: String) {
-        sharedPreferences.edit().putString("user_id", userId).apply()
-    }
-
-    fun getUserId(): String? {
-        return sharedPreferences.getString("user_id", null)
+    fun getAccessToken(): String? {
+        Log.d("token", preferences.getString("token", null).toString())
+        return preferences.getString("token", null)
     }
 }
