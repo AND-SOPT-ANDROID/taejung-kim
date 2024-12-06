@@ -1,4 +1,4 @@
-package org.sopt.and.domain
+package org.sopt.and.data.local
 
 import android.content.Context
 import android.util.Log

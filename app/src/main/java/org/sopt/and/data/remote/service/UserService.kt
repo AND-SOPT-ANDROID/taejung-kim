@@ -6,10 +6,8 @@ import org.sopt.and.data.remote.model.request.UserRegisterRequestDto
 import org.sopt.and.data.remote.model.response.MyHobbyResponseDto
 import org.sopt.and.data.remote.model.response.UserLoginResponseDto
 import org.sopt.and.data.remote.model.response.UserRegisterResponseDto
-import org.sopt.and.domain.SharedPreferenceManager
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface UserService {

@@ -33,7 +33,7 @@ class UserViewModel @Inject constructor(
             )
             _userRegisterState.value =
                 result.fold(onSuccess = { RegisterState.Success(it.no) },
-                    onFailure = { RegisterState.Failure(it.message ?: "N/A 오류가 안뜸 ㅋㅋ;") })
+                    onFailure = { RegisterState.Failure(it.message ?: "") })
         }
     }
 

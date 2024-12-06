@@ -18,7 +18,7 @@ import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 import org.sopt.and.BuildConfig.DEBUG
-import org.sopt.and.domain.SharedPreferenceManager
+import org.sopt.and.data.local.SharedPreferenceManager
 
 
 @Module
