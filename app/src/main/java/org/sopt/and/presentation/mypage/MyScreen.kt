@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,7 +23,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.sopt.and.R
 import org.sopt.and.presentation.mypage.components.MyMovieInfo
 import org.sopt.and.presentation.mypage.components.MyPurchaseInfo
@@ -29,10 +32,15 @@ import org.sopt.and.ui.theme.Gray2
 import org.sopt.and.ui.theme.Typography
 
 @Composable
-fun MyScreen(paddingValues: PaddingValues) {
-    val viewModel: MyViewModel = viewModel()
-    viewModel.getUserHobby()
+fun MyScreen(
+    paddingValues: PaddingValues,
+    viewModel: MyViewModel = hiltViewModel()
+) {
+    val hobbyData by viewModel.hobbyData.collectAsStateWithLifecycle()
 
+    LaunchedEffect(Unit) {
+        viewModel.getUserHobby()
+    }
 
     Column(
         modifier = Modifier
@@ -55,7 +63,7 @@ fun MyScreen(paddingValues: PaddingValues) {
             )
             Spacer(modifier = Modifier.size(8.dp))
             Text(
-                text = "${viewModel.hobbyState.value}",
+                text = "$hobbyData",
                 style = Typography.titleSmall,
                 color = Color.White,
             )

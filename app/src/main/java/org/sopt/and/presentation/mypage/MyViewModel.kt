@@ -5,26 +5,32 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.sopt.and.R
-import org.sopt.and.data.ServicePool
-import org.sopt.and.data.dto.ResponseMyHobbyDto
+import org.sopt.and.domain.repository.UserRepository
 import org.sopt.and.presentation.home.MovieData
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import javax.inject.Inject
 
-class MyViewModel: ViewModel() {
-    private val myService by lazy { ServicePool.myService }
+@HiltViewModel
+class MyViewModel @Inject constructor(
+    private val userRepository: UserRepository
+) : ViewModel() {
     val myWatching: StateFlow<List<MovieData>> field = MutableStateFlow(emptyList())
 
     private val _myInterest = MutableStateFlow<List<MovieData>>(emptyList())
     val myInterest: StateFlow<List<MovieData>> = _myInterest
 
-    private val _hobbyState = mutableStateOf<String?>(null)
-    val hobbyState: State<String?> get() = _hobbyState
+    private val _hobbyState = MutableStateFlow<HobbyState>(HobbyState.Idle)
+    val hobbyState: StateFlow<HobbyState> = _hobbyState
+
+    private val _hobbyData = MutableStateFlow<String?>(null)
+    val hobbyData: StateFlow<String?> = _hobbyData
 
     init {
         loadMovies()
@@ -40,29 +46,19 @@ class MyViewModel: ViewModel() {
         )
     }
 
-    fun getUserHobby(){
+    fun getUserHobby() {
         viewModelScope.launch {
-            myService.getMyHobby().enqueue(object:
-                Callback<ResponseMyHobbyDto> {
-                override fun onResponse(
-                    call: Call<ResponseMyHobbyDto>,
-                    response: Response<ResponseMyHobbyDto>
-                ) {
-                    if (response.isSuccessful) {
-                        val hobbyResponse = response.body()
-                        _hobbyState.value = hobbyResponse?.result?.hobby
-                    }
-                    else {
-                        val error = response.message()
-                        Log.e("error", error.toString())
-                    }
+            val result = userRepository.getUserHobby()
+            result.fold(
+                onSuccess = { userHobby ->
+                    _hobbyData.value = userHobby.hobby
+                    HobbyState.Success(userHobby.hobby)
+                },
+                onFailure = {
+                    _hobbyState.value =
+                        HobbyState.Failure(it.message ?: "")
                 }
-
-                override fun onFailure(call: Call<ResponseMyHobbyDto>, t: Throwable) {
-                    Log.e("failure", t.message.toString())
-                }
-
-            })
+            )
         }
     }
 

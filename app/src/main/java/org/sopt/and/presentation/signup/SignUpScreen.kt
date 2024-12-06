@@ -26,7 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import org.sopt.and.R
@@ -40,38 +40,36 @@ import org.sopt.and.util.showToast
 @Composable
 fun SignUpScreen(
     navController: NavController,
-    viewModel: UserViewModel
+    viewModel: UserViewModel = hiltViewModel()
 ) {
     // textStyle 변경을 위한 textFieldValue 추적
     val idState = remember { mutableStateOf(TextFieldValue()) }
     val passwordState = remember { mutableStateOf(TextFieldValue()) }
     val hobbyState = remember { mutableStateOf(TextFieldValue()) }
-    // id text remeber를 통한 변수 변경
-    var textId by remember { mutableStateOf("") }
-    // password text remeber를 통한 변수 변경
-    var textPasswd by remember { mutableStateOf("") }
-    // hobby text remember를 통한 변수 변경
-    var textHobby by remember { mutableStateOf("") }
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val authState by viewModel.authState.collectAsStateWithLifecycle(lifecycleOwner)
     val context = LocalContext.current
     // 모든 textFiled가 채워졌는지 판단하는 변수
     val allFieldFilled = idState.value.text.isNotEmpty() && passwordState.value.text.isNotEmpty() && hobbyState.value.text.isNotEmpty()
+    val registerState = viewModel.userRegisterState.collectAsStateWithLifecycle().value
 
 
-    LaunchedEffect(authState) {
-        when (authState) {
-            is AuthState.Success -> {
-                if ((authState as AuthState.Success).type == AuthType.SIGNUP) {
-                    navController.navigate("login") {
-                        popUpTo(0) { inclusive = true }
-                    }
+    LaunchedEffect(registerState) {
+        when (registerState) {
+            is RegisterState.Loading -> { }
+            is RegisterState.Success -> {
+                navController.navigate("login") {
+                    popUpTo(0) { inclusive = true }
                 }
             }
-            is AuthState.Error -> {
-                context.showToast((authState as AuthState.Error).messageResId)
+
+            is RegisterState.Failure -> {
+                when (registerState.code) {
+                    "00" -> context.showToast(R.string.sign_up_error)
+                    "01" -> context.showToast(R.string.sign_up_eight)
+                    else -> {}
+                }
             }
-            else -> Unit
+
+            else -> {}
         }
     }
 
@@ -167,9 +165,9 @@ fun SignUpScreen(
                 .clickable(
                     enabled = allFieldFilled,
                     onClick = {
-                        textId = idState.value.text
-                        textPasswd = passwordState.value.text
-                        textHobby = hobbyState.value.text
+                        val textId = idState.value.text
+                        val textPasswd = passwordState.value.text
+                        val textHobby = hobbyState.value.text
                         // viewModel의 signUp을 통해 success boolean 판단
                         viewModel.signUp(textId, textPasswd, textHobby)
                     }

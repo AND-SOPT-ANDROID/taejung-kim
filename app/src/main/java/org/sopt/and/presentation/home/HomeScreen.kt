@@ -119,6 +119,7 @@ fun HomeEditor(movies: List<MovieData>) {
     MovieList(stringResource(R.string.home_trust_editor), movies)
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeTopBanner(movies: List<MovieData>) {
     // 실제 페이지 수는 movies.size, 무한 스크롤을 위해 임의의 정수 사용
