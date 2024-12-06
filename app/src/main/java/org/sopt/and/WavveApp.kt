@@ -1,8 +1,10 @@
 package org.sopt.and
 
 import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
 
-class Application : Application() {
+@HiltAndroidApp
+class WavveApp : Application() {
     override fun onCreate() {
         super.onCreate()
         appContext = this
