@@ -56,10 +56,6 @@ android {
     }
 }
 
-hilt {
-    enableAggregatingTask = false
-}
-
 
 dependencies {
 
