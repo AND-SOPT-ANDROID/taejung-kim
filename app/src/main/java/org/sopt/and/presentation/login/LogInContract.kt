@@ -9,7 +9,6 @@ data class LogInState(
     val username: String = "",
     val password: String = "",
     val isLoading: Boolean = false,
-    val errorMessage: Int? = null
 ) : UiState
 
 // Event 정의
