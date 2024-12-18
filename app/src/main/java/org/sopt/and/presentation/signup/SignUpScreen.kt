@@ -14,16 +14,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -42,34 +38,21 @@ fun SignUpScreen(
     navController: NavController,
     viewModel: UserViewModel = hiltViewModel()
 ) {
-    // textStyle 변경을 위한 textFieldValue 추적
-    val idState = remember { mutableStateOf(TextFieldValue()) }
-    val passwordState = remember { mutableStateOf(TextFieldValue()) }
-    val hobbyState = remember { mutableStateOf(TextFieldValue()) }
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    // 모든 textFiled가 채워졌는지 판단하는 변수
-    val allFieldFilled = idState.value.text.isNotEmpty() && passwordState.value.text.isNotEmpty() && hobbyState.value.text.isNotEmpty()
-    val registerState = viewModel.userRegisterState.collectAsStateWithLifecycle().value
 
-
-    LaunchedEffect(registerState) {
-        when (registerState) {
-            is RegisterState.Loading -> { }
-            is RegisterState.Success -> {
-                navController.navigate("login") {
-                    popUpTo(0) { inclusive = true }
+    LaunchedEffect(Unit) {
+        viewModel.sideEffect.collect { effect ->
+            when (effect) {
+                is SignUpSideEffect.ShowToast -> {
+                    context.showToast(effect.message)
+                }
+                is SignUpSideEffect.NavigateToLogin -> {
+                    navController.navigate("login") {
+                        popUpTo(0) { inclusive = true }
+                    }
                 }
             }
-
-            is RegisterState.Failure -> {
-                when (registerState.code) {
-                    "00" -> context.showToast(R.string.sign_up_error)
-                    "01" -> context.showToast(R.string.sign_up_eight)
-                    else -> {}
-                }
-            }
-
-            else -> {}
         }
     }
 
@@ -85,95 +68,112 @@ fun SignUpScreen(
                 .padding(16.dp),
         ) {
             Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.TopEnd
+                modifier = Modifier.fillMaxSize()
             ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 44.dp)
+                        .background(Color.Black)
+                        .padding(16.dp),
+                ) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.TopEnd
+                    ) {
+                        Text(
+                            text = "회원가입",
+                            color = Color.White,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
+                        Image(
+                            painter = painterResource(R.drawable.ic_exit),
+                            contentDescription = "X 버튼",
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.weight(3f))
+                    SignUpTitle(
+                        firstText = stringResource(R.string.sign_up_title_top_start),
+                        firstColor = Color.White,
+                        secondText = stringResource(R.string.sign_up_title_top_end),
+                        secondColor = Color.Gray
+                    )
+
+                    SignUpTitle(
+                        firstText = stringResource(R.string.sign_up_title_bottom_start),
+                        firstColor = Color.White,
+                        secondText = stringResource(R.string.sign_up_title_bottom_end),
+                        secondColor = Color.Gray
+                    )
+                    Spacer(modifier = Modifier.weight(2f))
+
+                    IdHobbyTextField(
+                        valueState = state.username,
+                        onValueChange = {
+                            viewModel.setEvent(SignUpEvent.UsernameChanged(it))
+                        },
+                        holderText = R.string.log_in_id,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+
+                    Spacer(modifier = Modifier.weight(0.5f))
+                    SignUpInfoRow(
+                        iconResId = R.drawable.ic_info,
+                        text = stringResource(R.string.sign_up_id)
+                    )
+
+                    Spacer(modifier = Modifier.weight(1f))
+                    PasswordField(
+                        passwordState = state.password,
+                        onValueChange = {
+                            viewModel.setEvent(SignUpEvent.PasswordChanged(it))
+                        },
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+
+                    Spacer(modifier = Modifier.weight(0.5f))
+                    SignUpInfoRow(
+                        iconResId = R.drawable.ic_info,
+                        text = stringResource(R.string.sign_up_passwd)
+                    )
+
+                    Spacer(modifier = Modifier.weight(1f))
+                    IdHobbyTextField(
+                        valueState = state.hobby,
+                        onValueChange = {
+                            viewModel.setEvent(SignUpEvent.HobbyChanged(it))
+                        },
+                        holderText = R.string.sign_up_hobby,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+
+                    Spacer(modifier = Modifier.weight(2f))
+                    SocialServiceLogIn()
+                    Spacer(modifier = Modifier.weight(8f))
+                }
+
                 Text(
-                    text = "회원가입",
+                    text = "Wavve 회원가입",
                     color = Color.White,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .background(
+                            if (state.username.isNotEmpty() && state.password.isNotEmpty() && state.hobby.isNotEmpty()) Color.Blue else Color.Gray
+                        )
+                        .padding(10.dp)
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .clickable(
+                            enabled = state.username.isNotEmpty() && state.password.isNotEmpty() && state.hobby.isNotEmpty(),
+                            onClick = {
+                                viewModel.setEvent(SignUpEvent.SignUpClicked)
+                            }
+                        ),
                     textAlign = TextAlign.Center
                 )
-                Image(
-                    painter = painterResource(R.drawable.ic_exit),
-                    contentDescription = "X 버튼",
-                    modifier = Modifier.size(24.dp)
-                )
             }
-
-            Spacer(modifier = Modifier.weight(3f))
-            SignUpTitle(
-                firstText = stringResource(R.string.sign_up_title_top_start),
-                firstColor = Color.White,
-                secondText = stringResource(R.string.sign_up_title_top_end),
-                secondColor = Color.Gray
-            )
-
-            SignUpTitle(
-                firstText = stringResource(R.string.sign_up_title_bottom_start),
-                firstColor = Color.White,
-                secondText = stringResource(R.string.sign_up_title_bottom_end),
-                secondColor = Color.Gray
-            )
-            Spacer(modifier = Modifier.weight(2f))
-            IdHobbyTextField(
-                valueState = idState,
-                holderText = R.string.log_in_id,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-
-            Spacer(modifier = Modifier.weight(0.5f))
-            SignUpInfoRow(
-                iconResId = R.drawable.ic_info,
-                text = stringResource(R.string.sign_up_id)
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-            PasswordField(
-                passwordState = passwordState,
-                modifier = Modifier.padding(top = 8.dp)
-            )
-
-            Spacer(modifier = Modifier.weight(0.5f))
-            SignUpInfoRow(
-                iconResId = R.drawable.ic_info,
-                text = stringResource(R.string.sign_up_passwd)
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-            IdHobbyTextField(
-                valueState = hobbyState,
-                holderText = R.string.sign_up_hobby,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-
-            Spacer(modifier = Modifier.weight(2f))
-            SocialServiceLogIn()
-            Spacer(modifier = Modifier.weight(8f))
         }
-
-        Text(
-            text = "Wavve 회원가입",
-            color = Color.White,
-            modifier = Modifier
-                .background(
-                    if (allFieldFilled) Color.Blue else Color.Gray,
-                )
-                .padding(10.dp)
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .clickable(
-                    enabled = allFieldFilled,
-                    onClick = {
-                        val textId = idState.value.text
-                        val textPasswd = passwordState.value.text
-                        val textHobby = hobbyState.value.text
-                        // viewModel의 signUp을 통해 success boolean 판단
-                        viewModel.signUp(textId, textPasswd, textHobby)
-                    }
-                ),
-            textAlign = TextAlign.Center
-        )
-
     }
 }

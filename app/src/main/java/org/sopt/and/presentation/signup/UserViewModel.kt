@@ -9,31 +9,64 @@ import kotlinx.coroutines.launch
 import org.sopt.and.domain.model.UserLoginRequest
 import org.sopt.and.domain.model.UserRegisterRequest
 import org.sopt.and.domain.repository.UserRepository
+import org.sopt.and.presentation.core.BaseViewModel
 import org.sopt.and.presentation.login.LoginState
 import javax.inject.Inject
 
 @HiltViewModel
 class UserViewModel @Inject constructor(
     private val userRepository: UserRepository
-) : ViewModel() {
+) : BaseViewModel<SignUpState, SignUpSideEffect, SignUpEvent>() {
     private val _userRegisterState = MutableStateFlow<RegisterState>(RegisterState.Idle)
     val userRegisterState: StateFlow<RegisterState> = _userRegisterState
 
     private val _userLoginState = MutableStateFlow<LoginState>(LoginState.Idle)
     val userLoginState: StateFlow<LoginState> = _userLoginState
 
+    override fun createInitialState(): SignUpState = SignUpState()
+
+    override suspend fun handleEvent(event: SignUpEvent) {
+        when (event) {
+            is SignUpEvent.UsernameChanged -> {
+                setState { copy(username = event.username) }
+            }
+
+            is SignUpEvent.PasswordChanged -> {
+                setState { copy(password = event.password) }
+            }
+
+            is SignUpEvent.HobbyChanged -> {
+                setState { copy(hobby = event.hobby) }
+            }
+
+            is SignUpEvent.SignUpClicked -> {
+                signUp()
+            }
+        }
+    }
+
     // 회원가입 로직
-    fun signUp(username: String, password: String, hobby: String) {
-        _userRegisterState.value = RegisterState.Loading
+    fun signUp() {
+        setState { copy(isLoading = true) }
         viewModelScope.launch {
+            val state = uiState.value
             val result = userRepository.postUserRegistering(
                 UserRegisterRequest(
-                    username = username, password = password, hobby = hobby
+                    username = state.username,
+                    password = state.password,
+                    hobby = state.hobby
                 )
             )
-            _userRegisterState.value =
-                result.fold(onSuccess = { RegisterState.Success(it.no) },
-                    onFailure = { RegisterState.Failure(it.message ?: "") })
+            result.fold(
+                onSuccess = {
+                    setState { copy(isLoading = false) }
+                    setSideEffect { SignUpSideEffect.NavigateToLogin }
+                },
+                onFailure = {
+                    setState { copy(isLoading = false) }
+                    setSideEffect { SignUpSideEffect.ShowToast(it.message ?: "회원가입 실패") }
+                }
+            )
         }
     }
 
