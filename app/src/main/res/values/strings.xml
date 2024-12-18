@@ -32,6 +32,7 @@
     <string name="sign_up_title_top_end">만으로</string>
     <string name="sign_up_title_bottom_start">Wavve를 즐길 수 </string>
     <string name="sign_up_title_bottom_end">있어요!</string>
+    <string name="unknown_error">알 수 없는 오류가 발생하였습니다.</string>
 
 
     <!-- MyScreen -->

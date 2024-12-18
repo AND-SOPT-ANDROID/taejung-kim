@@ -36,7 +36,7 @@ import org.sopt.and.util.showToast
 @Composable
 fun SignUpScreen(
     navController: NavController,
-    viewModel: UserViewModel = hiltViewModel()
+    viewModel: SignUpViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
