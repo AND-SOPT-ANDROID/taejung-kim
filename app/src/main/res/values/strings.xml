@@ -10,7 +10,7 @@
     <!-- LogInScreen -->
     <string name="log_in_id">이메일 주소 또는 아이디</string>
     <string name="log_in_passwd">비밀번호</string>
-    <string name="log_in_error">아이디 비밀번호가 일치하지 않습니다</string>
+    <string name="log_in_error">유효하지 않은 필드거나 비밀번호가 옳지 않습니다.</string>
     <string name="log_in_ok">확인</string>
     <string name="log_in_execute">로그인</string>
     <string name="log_in_find_id">아이디 찾기</string>
@@ -19,11 +19,13 @@
     <string name="sns_pooq_wavve">SNS계정으로 간편하게 가입하여 서비스를 이용할 수 있습니다.\n기존 POOQ 계정 또는 Wavve 계정과는 연동되지 않으니 이용에 참고하세요.</string>
 
     <!-- SignUpScreen   -->
-    <string name="sign_up_error">유효하지 않은 아이디 입니다. 다시 한번 확인해주세요</string>
+    <string name="sign_up_error">유효하지 않은 입력이거나, 중복되는 이름입니다.</string>
     <string name="sign_up_paswd">유효하지 않은 비밀번호 입니다. 다시 한번 확인해주세요</string>
     <string name="sign_up_error_hobby">취미는 8자 이내로 입력해주세요</string>
     <string name="sign_up_duplicate_name">중복된 유저입니다. 다시 한번 확인해주세요</string>
     <string name="sign_up_passwd">비밀번호는 8~20자 이내로 영문 대소문자, 숫자, 특수문자 중 3가지 이상 혼용하여 입력해주세요</string>
+    <string name="sign_up_eight">각 필드를 8자 이내로 입력해주세요.</string>
+    <string name="log_in_method">유효하지 않은 통신 설정입니다.</string>
     <string name="sign_up_id">로그인, 비밀번호 찾기, 알림에 사용되니 정확한 이메일을 입력해주세요.</string>
     <string name="sign_up_hobby">취미</string>
     <string name="sign_up_title_top_start">이메일과 비밀번호</string>
