@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import org.sopt.and.R
-import org.sopt.and.presentation.signup.UserViewModel
 
 @Composable
 fun AuthManagement(

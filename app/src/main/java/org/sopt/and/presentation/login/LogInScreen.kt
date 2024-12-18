@@ -1,6 +1,5 @@
 package org.sopt.and.presentation.login
 
-import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -20,10 +19,10 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,55 +30,52 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import org.sopt.and.R
-import org.sopt.and.data.local.SharedPreferenceManager.saveToken
 import org.sopt.and.presentation.login.components.AuthManagement
+import org.sopt.and.presentation.signup.SignUpEvent
 import org.sopt.and.presentation.signup.components.PasswordField
-import org.sopt.and.presentation.signup.UserViewModel
 import org.sopt.and.presentation.signup.components.IdHobbyTextField
 import org.sopt.and.presentation.signup.components.SocialServiceLogIn
+import org.sopt.and.util.showSnackBar
 
 @Composable
 fun LogInScreen(
     navController: NavController,
-    viewModel: UserViewModel = hiltViewModel()
+    viewModel: LogInViewModel = hiltViewModel()
 ) {
-    // textStyle 변경을 위한 textFieldValue 추적
-    val idState = remember { mutableStateOf(TextFieldValue()) }
-    val passwordState = remember { mutableStateOf(TextFieldValue()) }
-    val loginState = viewModel.userLoginState.collectAsState().value
-    val context = LocalContext.current as Activity
-    val snackbarHostState = remember { SnackbarHostState() }
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val snackBarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(loginState) {
-        when (loginState) {
-            is LoginState.Loading -> {}
-            is LoginState.Success -> {
-                saveToken(loginState.data)
-                navController.popBackStack("login", inclusive = true)
-                navController.navigate("mainScreen")
+    LaunchedEffect(Unit) {
+        viewModel.sideEffect.collect { effect ->
+            when (effect) {
+                is LogInEffect.ShowSnackBar -> {
+                    snackBarHostState.showSnackBar(
+                        context = context,
+                        scope = coroutineScope,
+                        message = effect.message
+                    )
+                }
+                is LogInEffect.NavigateToMain -> {
+                    navController.popBackStack("login", inclusive = true)
+                    navController.navigate("mainScreen")
+                }
             }
-            is LoginState.Failure -> {
-                snackbarHostState.showSnackbar(
-                    message = context.getString(R.string.log_in_method),
-                    actionLabel = context.getString(R.string.log_in_ok)
-                )
-            }
-            else -> {}
         }
-
     }
 
     // SnackBar 구현을 위해 Scaffold 안에 정의
     Scaffold(
         // 스낵바의 표시 상태 관리
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }) { padding ->
+        snackbarHost = { SnackbarHost(hostState = snackBarHostState) }) { padding ->
 
         Column(
             modifier = Modifier
@@ -103,32 +99,31 @@ fun LogInScreen(
                     modifier = Modifier.size(28.dp)
                 )
             }
-
-            // id text remeber를 통한 변수 변경
-            var textId by remember { mutableStateOf("") }
-
             Spacer(modifier = Modifier.weight(2f))
             // 윤곽선의 색상 및 두께를 커스텀 가능한 OutLinedTextField
             IdHobbyTextField(
-                valueState = idState,
+                valueState = state.username,
+                onValueChange = {
+                    viewModel.setEvent(LogInEvent.UsernameChanged(it))
+                },
                 holderText = R.string.log_in_id,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
 
             Spacer(modifier = Modifier.height(10.dp))
-            // password text remeber를 통한 변수 변경
-            var textPasswd by remember { mutableStateOf("") }
             PasswordField(
-                passwordState = passwordState, modifier = Modifier.padding(top = 8.dp)
+                passwordState = state.password,
+                onValueChange = {
+                    viewModel.setEvent(LogInEvent.PasswordChanged(it))
+                },
+                modifier = Modifier.padding(top = 8.dp)
             )
 
             Spacer(modifier = Modifier.weight(1f))
             Button(
                 onClick = {
-                    textId = idState.value.text
-                    textPasswd = passwordState.value.text
-                    viewModel.logIn(textId, textPasswd)
+                    viewModel.setEvent(LogInEvent.LogInClicked)
                 },
                 modifier = Modifier.fillMaxWidth(), contentPadding = PaddingValues(16.dp),
                 // ButtonDefaults 의 4가지 형태

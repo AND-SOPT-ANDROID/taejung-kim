@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -17,7 +16,6 @@ import org.sopt.and.presentation.login.LogInScreen
 import org.sopt.and.presentation.main.MainScreen
 import org.sopt.and.presentation.navigation.Screen
 import org.sopt.and.presentation.signup.SignUpScreen
-import org.sopt.and.presentation.signup.UserViewModel
 import org.sopt.and.ui.theme.ANDANDROIDTheme
 
 @AndroidEntryPoint
@@ -29,17 +27,16 @@ class MainActivity : ComponentActivity() {
             ANDANDROIDTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val navController = rememberNavController()
-                    val userViewModel: UserViewModel = viewModel()
                     NavHost(
                         navController = navController,
                         startDestination = Screen.LogIn.route,
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable(Screen.LogIn.route) {
-                            LogInScreen(navController, userViewModel)
+                            LogInScreen(navController)
                         }
                         composable(Screen.SignUp.route) {
-                            SignUpScreen(navController, userViewModel)
+                            SignUpScreen(navController)
                         }
                         composable(Screen.MainScreen.route) {
                             MainScreen(navController)

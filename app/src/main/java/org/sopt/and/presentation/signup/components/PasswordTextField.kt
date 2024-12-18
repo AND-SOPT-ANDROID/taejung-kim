@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -14,21 +13,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import org.sopt.and.R
 
 @Composable
 fun PasswordField(
-    passwordState: MutableState<TextFieldValue>,
+    passwordState: String,
+    onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val showPassword = remember { mutableStateOf(false) }
 
     OutlinedTextField(
-        value = passwordState.value,
-        onValueChange = { passwordState.value = it },
+        value = passwordState,
+        onValueChange = onValueChange,
         singleLine = true,
         textStyle = TextStyle(color = Color.White),
         placeholder = { Text(stringResource(R.string.log_in_passwd)) },
