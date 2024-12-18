@@ -1,6 +1,5 @@
 package org.sopt.and.presentation.login
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -53,7 +52,6 @@ class LogInViewModel @Inject constructor(
                 },
                 onFailure = { error ->
                     val message = if (error is HttpException) {
-                        Log.d("error", error.code().toString())
                         when (error.code()) {
                             400 -> R.string.log_in_method
                             403 -> R.string.sign_up_paswd
